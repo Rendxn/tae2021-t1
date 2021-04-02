@@ -28,7 +28,7 @@ Debido a que KNN es muy sensible a la distancia entre los datos y las unidades d
 
 ## Entrenamiento y control
 ```{r}
-ctrl <- trainControl(method="repeatedcv", repeats = 5)
+ctrl <- trainControl(method="repeatedcv", repeats = 3)
 knn_fit <- train(HIJOS ~., data = train, method = "knn", trControl = ctrl, preProcess = c("center","scale"), tuneLength = 20, na.action = na.omit)
 # veamos cuál valor de K fue seleccionado como el mejor
 plot(knn_fit)
