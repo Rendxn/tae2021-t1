@@ -444,13 +444,13 @@ write.csv(all_input,&quot;../db/input_with_dir.csv&quot;, row.names = FALSE)
 
 clean_input &lt;- all_input %&gt;% select(-c(&quot;ï..DIRECTORIO&quot;, &quot;SECUENCIA_P&quot;, &quot;SECUENCIA_ENCUESTA&quot;))
 
-write.csv(all_input,&quot;../db/input.csv&quot;, row.names = FALSE)
+write.csv(clean_input,&quot;../db/input.csv&quot;, row.names = FALSE)
 
 labeled_input &lt;- all_input %&gt;% left_join(labeled, by = c(&#39;ï..DIRECTORIO&#39;, &#39;SECUENCIA_P&#39;))
 
 clean_labeled_input &lt;- labeled_input %&gt;% select(-c(&quot;ï..DIRECTORIO&quot;, &quot;SECUENCIA_P&quot;, &quot;SECUENCIA_ENCUESTA&quot;))
 
-write.csv(all_input,&quot;../db/labeled_input.csv&quot;, row.names = FALSE)</code></pre>
+write.csv(clean_labeled_input,&quot;../db/labeled_input.csv&quot;, row.names = FALSE)</code></pre>
 <div id="refs" class="references csl-bib-body">
 <div id="ref-DirecciondeMetodologiayProduccionEstadistica2020" class="csl-entry">
 <div class="csl-left-margin">[1] </div><div class="csl-right-inline">Dirección de Metodología y Producción Estadística, <span>“<span class="nocase">Encuesta Nacional de Calidad de Vida 2019</span>.”</span> 2020 [Online]. Available: <a href="http://microdatos.dane.gov.co/index.php/catalog/678/study-description">http://microdatos.dane.gov.co/index.php/catalog/678/study-description</a>. [Accessed: 01-Apr-2021]</div>
