@@ -150,12 +150,12 @@ write.csv(all_input,"../db/input_with_dir.csv", row.names = FALSE)
 
 clean_input <- all_input %>% select(-c("ï..DIRECTORIO", "SECUENCIA_P", "SECUENCIA_ENCUESTA"))
 
-write.csv(all_input,"../db/input.csv", row.names = FALSE)
+write.csv(clean_input,"../db/input.csv", row.names = FALSE)
 
 labeled_input <- all_input %>% left_join(labeled, by = c('ï..DIRECTORIO', 'SECUENCIA_P'))
 
 clean_labeled_input <- labeled_input %>% select(-c("ï..DIRECTORIO", "SECUENCIA_P", "SECUENCIA_ENCUESTA"))
 
-write.csv(all_input,"../db/labeled_input.csv", row.names = FALSE)
+write.csv(clean_labeled_input,"../db/labeled_input.csv", row.names = FALSE)
 ```
 
