@@ -1,0 +1,161 @@
+---
+title: "Informe"
+output: html_document
+bibliography: bibliography.bib
+csl: ieee-with-url.csl
+---
+
+# Importe de Librerías
+
+```{r import-dependencies, warning=FALSE, message=FALSE}
+library(dplyr)
+library(tibble)
+```
+
+# Lectura de Datos
+
+```{r import-data, cache = TRUE}
+
+# Todos los nombres de los archivos .csv en el directorio `/data`
+# precedido por el directorio.
+
+file_paths <-
+  list.files(path = '../data',
+             pattern = '*.csv',
+             full.names = TRUE)
+
+# Todos los nombres de los archivos .csv en el directorio `/data`.
+
+file_names <-
+  list.files(path = '../data',
+             pattern = '*.csv')
+
+# Importa todos los archivos de la lista `file_paths`
+# y los almacena en la lista `files`.
+
+files <- lapply(
+  file_paths,
+  read.table,
+  header = TRUE,
+  sep = ';',
+  dec = ','
+)
+
+```
+
+# Caracterización de Capítulos (Tablas) de la Base de Datos
+
+| Tabla                                                     | Público encuestado      |
+| :-------------------------------------------------------- | :---------------------- |
+| Datos de la vivienda                                      | Vivienda                |
+| Servicios del hogar                                       | Hogar                   |
+| Características y composición del hogar                   | Persona                 |
+| Salud                                                     | Persona                 |
+| Atención integral de los niños y niñas menores de 5 años  | Persona, edad < 5       |
+| Educación                                                 | Persona, edad > 5       |
+| Fuerza de trabajo                                         | Persona, edad > 12      |
+| Tecnologías de información y comunicación                 | Persona, edad > 5       |
+| Trabajo infantil                                          | Persona, 5 < edad < 11  |
+| Tenencia y financiación de la vivienda que ocupa el hogar | Hogar                   |
+| Condiciones de vida del hogar y tenencia de bienes        | Hogar                   |
+| Uso de energéticos del hogar                              | Hogar                   |
+
+Con esta caracterización, podemos concluir que se encuestaron:
+
+* $93161$ viviendas.
+* $93993$ hogares.
+* $289558$ personas.
+
+# Preprocesamiento de Datos
+
+## Generación de la Etiqueta
+
+En la tabla *Características y composición del hogar*, la variable **P6051** indica
+el parentesco de la persona encuestada con el jefe de hogar. Cuando esta variable es
+*3*, significa que la persona es un hijo del jefe de hogar. Por lo tanto, podemos
+computar cuántos hijos hay en un hogar de la siguiente manera:
+
+1. Cambiar los valores de P6051, así:
+
+$$
+\begin{cases}
+  1 & \text{cuando } P6051 = 3 \\
+  0 & \text{en otro caso }
+\end{cases}
+$$
+2. Agrupamos por hogar. Según los metadatos y la estructura de la encuesta 
+[@DirecciondeMetodologiayProduccionEstadistica2020], las claves de un hogar
+en las tablas de personas (como *Características y composición del hogar*)
+son `ï..DIRECTORIO` el cual es único para cada vivienda y `SECUENCIA_P`, el cual
+es único por cada hogar dentro de esa vivienda.
+
+```{r label-generation}
+# Trae la tabla de Características y composición del hogar
+# donde se encuentra la variable P6051.
+carac_persona <- files[[2]]
+
+labeled <-
+  carac_persona %>% mutate(P6051 = if_else(P6051 == 3, 1, 0)) %>% group_by(ï..DIRECTORIO, SECUENCIA_P) %>% summarise(HIJOS = sum(P6051), .groups = "keep")
+
+```
+
+
+## Filtrado y Generación de Variables de Entrada
+
+Seleccionamos las siguientes variables de la base de datos: 
+
+| Tabla                                    | Variable     | Etiqueta                                    | Tipo     | Formato     |
+|:----                                     | :----------- | :------------------------------             | :------- | :-------    |
+| Características y composición del hogar  | P6020        | Sexo                                        | Discreta | Numérica    |
+| Características y composición del hogar  | P6040        | Edad                                        | Discreta | Numérica    |
+| Característiicas y composición del hogar | P5502        | Estado civil                                | Discreta | Numérica    |
+| Característiicas y composición del hogar | P6080        | Pueblo o etnia                              | Discreta | Numérica    |
+| Característiicas y composición del hogar | P1895        | Nivel de satisfacción de vida               | Discreta | Numérica    |
+| Educación                                | P8587        | Nivel educativo                             | Discreta | Numérica    |
+| Datos de la vivienda                     | REGION       | Región                                      | Discreta | Numérica    |
+| Datos de la vivienda                     | P8520S1      | Energía eléctrica                           | Discreta | Numérica    |
+| Datos de la vivienda                     | P8520S1A1    | Estrato                                     | Discreta | Numérica    |
+| Servicios del hogar                      | I_HOGAR      | Ingreso mensual total del hogar             | Discreta | Numérica    |
+| Servicios del hogar                      | I_UGASTO     | Ingreso mensual total de la unidad de gasto | Discreta | Numérica    |
+
+```{r}
+
+# Cogemos cada tabla
+carac_hogar <- files[[2]] # Personas
+edu <- files[[7]] # Personas
+servicios_hogar <- files[[10]] # Hogar
+vivienda <- files[[6]] # Vivienda
+
+# Definimos columnas a seleccionar de cada tabla
+carac_cols <- c('ï..DIRECTORIO', 'SECUENCIA_P', "SECUENCIA_ENCUESTA", 'P6051', 'P6020', 'P6040', 'P5502', 'P6080', 'P1895')
+edu_cols <- c('ï..DIRECTORIO', 'SECUENCIA_P', "SECUENCIA_ENCUESTA", 'P8587')
+vivienda_cols <- c('ï..DIRECTORIO', 'REGION', 'P8520S1', 'P8520S1A1')
+servicios_cols <- c('ï..DIRECTORIO', 'SECUENCIA_ENCUESTA', 'I_HOGAR', 'I_UGASTO')
+
+###
+
+all_input <- carac_hogar %>% select(any_of(carac_cols)) %>% filter(P6051 == 1)
+
+all_input <- all_input %>% left_join(select(edu, any_of(edu_cols)), by = c("ï..DIRECTORIO", "SECUENCIA_P", "SECUENCIA_ENCUESTA"))
+
+all_input <- all_input %>% left_join(select(servicios_hogar, any_of(servicios_cols)), by = c("ï..DIRECTORIO", "SECUENCIA_ENCUESTA"))
+
+all_input <- all_input %>% left_join(select(vivienda, any_of(vivienda_cols)), by = c("ï..DIRECTORIO"))
+
+write.csv(all_input,"../db/input_with_dir.csv", row.names = FALSE)
+
+###
+
+# Drop DIRECTORIO, SECUENCIA_P y SECUENCIA_ENCUESTA
+
+clean_input <- all_input %>% select(-c("ï..DIRECTORIO", "SECUENCIA_P", "SECUENCIA_ENCUESTA"))
+
+write.csv(all_input,"../db/input.csv", row.names = FALSE)
+
+labeled_input <- all_input %>% left_join(labeled, by = c('ï..DIRECTORIO', 'SECUENCIA_P'))
+
+clean_labeled_input <- labeled_input %>% select(-c("ï..DIRECTORIO", "SECUENCIA_P", "SECUENCIA_ENCUESTA"))
+
+write.csv(all_input,"../db/labeled_input.csv", row.names = FALSE)
+```
+

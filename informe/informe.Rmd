@@ -1,0 +1,15 @@
+---
+title: "Informe"
+output: html_document
+bibliography: bibliography.bib
+csl: ieee-with-url.csl
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+```{r, child=c('preprocessing.Rmd')}
+
+```
+

@@ -37,3 +37,9 @@ vignettes/*.pdf
 
 # R Environment Variables
 .Renviron
+
+# DANE csv
+/data
+
+# HTML Cache
+/informe/*_cache
