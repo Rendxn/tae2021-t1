@@ -1,0 +1,35 @@
+---
+title: "ModeloKNN"
+output: html_document
+bibliography: bibliography.bib
+csl: ieee-with-url.csl
+---
+# Importe de librería para el modelo de clasificación
+```{r}
+library(caret)
+```
+# Modelo de clasificación utilizando KNN
+
+## Muestreo y separación en entrenamiento y validación
+```{r}
+# Semilla para generación de números aleatorios
+set.seed(20210406)
+# Asignación de índices del dataset para training 0.8 y testing 0.2 
+indexTraining <- createDataPartition(y = clean_labeled_input$HIJOS, p = 0.8, list = FALSE)
+# Parte del dataset designada para training
+train <- clean_labeled_input[indexTraining,]
+# Parte del dataset designada para testing
+test <- clean_labeled_input[-indexTraining,]
+```
+
+## Preprocesamiento
+---
+Debido a que KNN es muy sensible a la distancia entre los datos y las unidades de estos, es necesario normalizar los datos antes de entrenar el modelo. El paquete caret hace este paso de normalización por nosotros.
+
+## Entrenamiento y control
+```{r}
+ctrl <- trainControl(method="repeatedcv", repeats = 3)
+knn_fit <- train(HIJOS ~., data = train, method = "knn", trControl = ctrl, preProcess = c("center","scale"), tuneLength = 20, na.action = na.omit)
+# veamos cuál valor de K fue seleccionado como el mejor
+plot(knn_fit)
+```

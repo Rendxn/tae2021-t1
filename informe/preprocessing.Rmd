@@ -113,10 +113,8 @@ Seleccionamos las siguientes variables de la base de datos:
 | Característiicas y composición del hogar | P1895        | Nivel de satisfacción de vida               | Discreta | Numérica    |
 | Educación                                | P8587        | Nivel educativo                             | Discreta | Numérica    |
 | Datos de la vivienda                     | REGION       | Región                                      | Discreta | Numérica    |
-| Datos de la vivienda                     | P8520S1      | Energía eléctrica                           | Discreta | Numérica    |
 | Datos de la vivienda                     | P8520S1A1    | Estrato                                     | Discreta | Numérica    |
 | Servicios del hogar                      | I_HOGAR      | Ingreso mensual total del hogar             | Discreta | Numérica    |
-| Servicios del hogar                      | I_UGASTO     | Ingreso mensual total de la unidad de gasto | Discreta | Numérica    |
 
 ```{r}
 
@@ -129,8 +127,8 @@ vivienda <- files[[6]] # Vivienda
 # Definimos columnas a seleccionar de cada tabla
 carac_cols <- c('ï..DIRECTORIO', 'SECUENCIA_P', "SECUENCIA_ENCUESTA", 'P6051', 'P6020', 'P6040', 'P5502', 'P6080', 'P1895')
 edu_cols <- c('ï..DIRECTORIO', 'SECUENCIA_P', "SECUENCIA_ENCUESTA", 'P8587')
-vivienda_cols <- c('ï..DIRECTORIO', 'REGION', 'P8520S1', 'P8520S1A1')
-servicios_cols <- c('ï..DIRECTORIO', 'SECUENCIA_ENCUESTA', 'I_HOGAR', 'I_UGASTO')
+vivienda_cols <- c('ï..DIRECTORIO', 'REGION', 'P8520S1A1')
+servicios_cols <- c('ï..DIRECTORIO', 'SECUENCIA_ENCUESTA', 'I_HOGAR')
 
 ###
 
@@ -148,13 +146,13 @@ write.csv(all_input,"../db/input_with_dir.csv", row.names = FALSE)
 
 # Drop DIRECTORIO, SECUENCIA_P y SECUENCIA_ENCUESTA
 
-clean_input <- all_input %>% select(-c("ï..DIRECTORIO", "SECUENCIA_P", "SECUENCIA_ENCUESTA"))
+clean_input <- all_input %>% select(-c("ï..DIRECTORIO", "SECUENCIA_P", "SECUENCIA_ENCUESTA", "P6051"))
 
 write.csv(clean_input,"../db/input.csv", row.names = FALSE)
 
 labeled_input <- all_input %>% left_join(labeled, by = c('ï..DIRECTORIO', 'SECUENCIA_P'))
 
-clean_labeled_input <- labeled_input %>% select(-c("ï..DIRECTORIO", "SECUENCIA_P", "SECUENCIA_ENCUESTA"))
+clean_labeled_input <- labeled_input %>% select(-c("ï..DIRECTORIO", "SECUENCIA_P", "SECUENCIA_ENCUESTA", "P6051"))
 
 write.csv(clean_labeled_input,"../db/labeled_input.csv", row.names = FALSE)
 ```
