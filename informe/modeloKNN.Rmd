@@ -31,29 +31,27 @@ test <- clean_labeled_input[-indexTraining,]
 Debido a que KNN es muy sensible a la distancia entre los datos y las unidades de estos, es necesario normalizar los datos antes de entrenar el modelo. El paquete caret hace este paso de normalización por nosotros.
 
 ## Entrenamiento y control
+---
+
 ```{r}
 cluster <- makeCluster(detectCores() - 2) # habilitar n - 2 threads de la cpu
 registerDoParallel(cluster)
-ctrl <- trainControl(method="repeatedcv", repeats = 3, allowParallel = TRUE)
-knn_fit <- train(HIJOS ~., data = train, method = "knn", trControl = ctrl, preProcess = c("center","scale"), tuneLength = 15, na.action = na.omit)
+ctrl <- trainControl(method="none", allowParallel = TRUE)
+knn_fit <- train(HIJOS ~., data = train, method = "knn", trControl = ctrl, preProcess = c("center","scale"), tuneGrid=data.frame(k=5), na.action = na.omit)
 stopCluster(cluster)
 ```
 
 ```{r}
 # veamos cuál valor de K fue seleccionado como el mejor
-plot(knn_fit)
 knn_fit
 ```
-
+## Validación y pruebas
 ```{r}
 test_pred <- predict(knn_fit, newdata = test, na.action = na.omit)
 ```
-
+### Matriz de confusión
 ```{r}
-# línea temporal mientras existan valores na para coincidir dimensiones
 test_clean <- na.omit(test)
-```
-
-```{r}
-    confusionMatrix(test_pred, test_clean$HIJOS)
+cm <- confusionMatrix(test_pred, test_clean$HIJOS)
+cm
 ```
