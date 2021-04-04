@@ -110,7 +110,6 @@ Seleccionamos las siguientes variables de la base de datos:
 | Características y composición del hogar  | P6040        | Edad                                        | Discreta | Numérica    |
 | Característiicas y composición del hogar | P5502        | Estado civil                                | Discreta | Numérica    |
 | Característiicas y composición del hogar | P6080        | Pueblo o etnia                              | Discreta | Numérica    |
-| Característiicas y composición del hogar | P1895        | Nivel de satisfacción de vida               | Discreta | Numérica    |
 | Educación                                | P8587        | Nivel educativo                             | Discreta | Numérica    |
 | Datos de la vivienda                     | REGION       | Región                                      | Discreta | Numérica    |
 | Datos de la vivienda                     | P8520S1A1    | Estrato                                     | Discreta | Numérica    |
@@ -125,7 +124,7 @@ servicios_hogar <- files[[10]] # Hogar
 vivienda <- files[[6]] # Vivienda
 
 # Definimos columnas a seleccionar de cada tabla
-carac_cols <- c('ï..DIRECTORIO', 'SECUENCIA_P', "SECUENCIA_ENCUESTA", 'P6051', 'P6020', 'P6040', 'P5502', 'P6080', 'P1895')
+carac_cols <- c('ï..DIRECTORIO', 'SECUENCIA_P', "SECUENCIA_ENCUESTA", 'P6051', 'P6020', 'P6040', 'P5502', 'P6080')
 edu_cols <- c('ï..DIRECTORIO', 'SECUENCIA_P', "SECUENCIA_ENCUESTA", 'P8587')
 vivienda_cols <- c('ï..DIRECTORIO', 'REGION', 'P8520S1A1')
 servicios_cols <- c('ï..DIRECTORIO', 'SECUENCIA_ENCUESTA', 'I_HOGAR', 'CANT_PERSONAS_HOGAR')
@@ -156,16 +155,15 @@ labeled_input <- all_input %>% left_join(labeled, by = c('ï..DIRECTORIO', 'SECU
 clean_labeled_input <- labeled_input %>% select(-c("ï..DIRECTORIO", "SECUENCIA_P", "SECUENCIA_ENCUESTA", "P6051")) %>% filter(I_HOGAR < 100000000)
 
 
-## Si el modelo estuviera corriendo en R:
+## Convertimos las variables categóricas a factores
 
-# clean_labeled_input$P6020 <- as.factor(clean_labeled_input$P6020)
-# clean_labeled_input$P5502 <- as.factor(clean_labeled_input$P5502)
-# clean_labeled_input$P6080 <- as.factor(clean_labeled_input$P6080)
-# clean_labeled_input$P1895 <- as.factor(clean_labeled_input$P1895)
-# clean_labeled_input$P8587 <- as.factor(clean_labeled_input$P8587)
-# clean_labeled_input$REGION <- as.factor(clean_labeled_input$REGION)
-# clean_labeled_input$P8520S1A1 <-
-#   as.factor(clean_labeled_input$P8520S1A1)
+clean_labeled_input$P6020 <- as.factor(clean_labeled_input$P6020)
+clean_labeled_input$P5502 <- as.factor(clean_labeled_input$P5502)
+clean_labeled_input$P6080 <- as.factor(clean_labeled_input$P6080)
+clean_labeled_input$P8587 <- as.factor(clean_labeled_input$P8587)
+clean_labeled_input$REGION <- as.factor(clean_labeled_input$REGION)
+clean_labeled_input$P8520S1A1 <- as.factor(clean_labeled_input$P8520S1A1)
+clean_labeled_input$HIJOS <- as.factor(clean_labeled_input$HIJOS)
 
 write.csv(clean_labeled_input,"../db/labeled_input.csv", row.names = FALSE)
 ```
