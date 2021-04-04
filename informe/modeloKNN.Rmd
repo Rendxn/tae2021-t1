@@ -42,6 +42,8 @@ stopCluster(cluster)
 ```
 
 ```{r}
+# Guardamos el modelo
+saveRDS(knn_fit, './knnModel.rds')
 # veamos cuál valor de K fue seleccionado como el mejor
 knn_fit
 ```
