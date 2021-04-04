@@ -1,0 +1,158 @@
+---
+title: "Analisis Descriptivo"
+output: html_document
+---
+
+
+```{r}
+library(dplyr)
+library(knitr)
+library(ggplot2)
+```
+
+
+
+# Base de datos: 
+La bases de datos fue tomada de la Encuesta Nacional de calidad de vida en Colombia por el Dane y despues de un proceso de limpieza y depuracion de los datos. Hemos selecciona las siquientes variables de interes: 
+
+* **P6020:** Sexo 
+* **P6040:** Edad 
+* **P5502:** Estado civil   
+* **P6080:** Pueblo o etnia   
+* **P1895:** Nivel de satisfacción de vida  
+* **P8587:** Nivel educativo
+* **I_HOGAR:** Ingreso mensual total del hogar 
+* **I_UGASTO:** Ingreso mensual total de la unidad de gasto
+* **REGION:** Region
+* **P8520S1:** Energia Electrica
+* **P8520S1A1:** Estrato
+* **HIJOS:** Hijos
+
+```{r}
+labeled <- read.csv("../db/labeled_input.csv", header = TRUE, sep = ",")
+data <- labeled %>% select(!P6051)
+data <- data.frame(data)
+
+#data %>% select(P6051) %>% filter(P6051 == 2) %>% count()
+```
+
+# Medidas de localizacion 
+```{r}
+data_n  <- data %>% select(P6040, I_HOGAR, I_UGASTO, HIJOS)
+data_c  <- data %>% select(P6020, P5502, P6080, P1895, P8587, REGION, P8520S1, P8520S1A1)
+
+colnamesdatan <- c("Edad", "Ingreso mensual del Hogar", "Ingreso total unidad de Gasto", "Hijos")
+colnamesdatac <- c("Sexo", "Estado civil", "Etnia", "Satisfaccion de vida", "Nivel Educativo", "Region", "Energia Electrica", "Estrato")
+
+sd_f <- function(data) {
+  sd(data, na.rm = TRUE)
+}
+
+kable(summary(data_n), caption = "Medidas de localizacion", col.names = colnamesdatan)
+kable(t(apply(data_n, 2, sd_f)), caption = "Desviaciones Estandar", col.names = colnamesdatan)
+
+```
+* La edades de las cabezas de hogares encuestadas en colombia se encuentra en un rango de **13 anos** a **106 anos** con  promedio de **49 anos**  de edad que varian en **+- 16 anos** . 
+
+* Los ingresos mensuales de los hogares colombianos encuestados se encuentran en un rango de **530.000** a **284.600.000  pesos colombianos** con un promedio de **1.726.408 pesos colombianos** por hogar que varian en **+- 2.948.921 pesos colombianos** .
+
+* Los hijos de los hogares colombianos encuestados se encuentran en un rango de **0 hijos** a **11 hijos** con un promedio de  **1 hijo** por hogar y varian  en **+- 1 hijo**,
+
+
+
+```{r}
+#sexo 1: hombre  2:mujer
+
+# df <- data.frame(data_c$P6020)
+# pie(table(df), 
+#     col = c("grey", "pink"),
+#     main = "Sexo")
+
+```
+```{r}
+par(mfrow = c(2, 3))
+
+hist(data_n$P6040, main = "Edad", xlab = "Años", ylab = "Frecuencia Relativa")
+# 
+# hist(data_n$I_HOGAR, main = "Ingresos mensuales en el Hogar", 
+#      xlab = "Pesos Colombianos", xlim = c(0, 10000000),
+#      ylab = "Frecuencia Relativa", ylim = c(0, 93000000))
+plot(data_n$I_HOGAR, main = "Ingreso mensuales en el Hogar",
+     xlab = "Pesos Colomabianos", ylab = "frecuencia relativa")
+
+#hist(data_n$I_UGASTO)
+boxplot(data_n$I_HOGAR)
+
+hist(data_n$HIJOS, main = "Hijos", xlab = "Numeros de hijos", ylab ="Frecuencia Relativa")
+
+t_estrato <- table(data_c$P8520S1A1)
+g_estrato <- barplot(t_estrato,
+                     main = "Estrato",
+                     ylab = "Frecuencia Relativa",
+                     las = 1)
+#text(x = g_estrato, y = t_estrato, pos=3, cex=0.8, 
+             # col="black", label=round(g_estrato, 4))
+
+t_sexo <-prop.table(table(data_c$P6020))
+g_sexo <- barplot(t_sexo, 
+        col = c("gray", "pink"),
+        main = "Sexo",
+        ylab = "Frecuencia Relativa",
+        ylim = c(0, 0.8),
+        las = 1,
+        legend.text = c ("Hombre", "Mujer"))
+
+text(x = g_sexo,  y=t_sexo, pos=3, cex=0.8, col="black",
+     label=round(t_sexo, 4))
+
+# t_happy <- prop.table(table(data_c$P8520S1))
+# g_happy <- barplot(t_happy)
+
+```
+
+
+```{r}
+ # data_n %>% select(I_HOGAR) %>% filter(I_HOGAR > 100000000) %>% count()
+# db
+# boxplot(db)
+
+```
+
+```{r}
+
+data_s <- data %>% select(P6040, P5502, I_HOGAR, P6020,  P8587, REGION,  P8520S1A1, HIJOS,)
+
+
+panel.hist <- function(x, ...)
+{
+    usr <- par("usr"); on.exit(par(usr))
+    par(usr = c(usr[1:2], 0, 1.5) )
+    h <- hist(x, plot = FALSE)
+    breaks <- h$breaks; nB <- length(breaks)
+    y <- h$counts; y <- y/max(y)
+    rect(breaks[-nB], 0, breaks[-1], y, col = "cyan", ...)
+}
+panel.cor <- function(x, y, digits = 2, prefix = "", cex.cor, ...)
+{
+    usr <- par("usr"); on.exit(par(usr))
+    par(usr = c(0, 1, 0, 1))
+    r <- abs(cor(x, y))
+    txt <- format(c(r, 0.123456789), digits = digits)[1]
+    txt <- paste0(prefix, txt)
+    if(missing(cex.cor)) cex.cor <- 0.8/strwidth(txt)
+    text(0.5, 0.5, txt, cex = cex.cor * r)
+}
+
+pairs(data_s,lower.panel = panel.smooth, upper.panel = panel.cor,diag.panel = panel.hist)
+```
+
+
+```{r}
+#pairs(prueba %>% select(P6040, HIJOS))
+# round(cor(prueba %>% select(P6040, HIJOS)), 2)
+cor(x=data$P6040, y=data$HIJOS)
+#cor(x=data$I_HOGAR, y=data$HIJOS)
+
+
+```
+
