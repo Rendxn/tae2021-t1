@@ -104,17 +104,18 @@ labeled <-
 
 Seleccionamos las siguientes variables de la base de datos: 
 
-| Tabla                                    | Variable     | Etiqueta                                    | Tipo     | Formato     |
-|:----                                     | :----------- | :------------------------------             | :------- | :-------    |
-| Características y composición del hogar  | P6020        | Sexo                                        | Discreta | Numérica    |
-| Características y composición del hogar  | P6040        | Edad                                        | Discreta | Numérica    |
-| Característiicas y composición del hogar | P5502        | Estado civil                                | Discreta | Numérica    |
-| Característiicas y composición del hogar | P6080        | Pueblo o etnia                              | Discreta | Numérica    |
-| Característiicas y composición del hogar | P1895        | Nivel de satisfacción de vida               | Discreta | Numérica    |
-| Educación                                | P8587        | Nivel educativo                             | Discreta | Numérica    |
-| Datos de la vivienda                     | REGION       | Región                                      | Discreta | Numérica    |
-| Datos de la vivienda                     | P8520S1A1    | Estrato                                     | Discreta | Numérica    |
-| Servicios del hogar                      | I_HOGAR      | Ingreso mensual total del hogar             | Discreta | Numérica    |
+| Tabla                                    | Variable            | Etiqueta                                    | Tipo     | Formato     |
+|:----                                     | :-----------        | :------------------------------             | :------- | :-------    |
+| Características y composición del hogar  | P6020               | Sexo                                        | Discreta | Numérica    |
+| Características y composición del hogar  | P6040               | Edad                                        | Discreta | Numérica    |
+| Característiicas y composición del hogar | P5502               | Estado civil                                | Discreta | Numérica    |
+| Característiicas y composición del hogar | P6080               | Pueblo o etnia                              | Discreta | Numérica    |
+| Característiicas y composición del hogar | P1895               | Nivel de satisfacción de vida               | Discreta | Numérica    |
+| Educación                                | P8587               | Nivel educativo                             | Discreta | Numérica    |
+| Datos de la vivienda                     | REGION              | Región                                      | Discreta | Numérica    |
+| Datos de la vivienda                     | P8520S1A1           | Estrato                                     | Discreta | Numérica    |
+| Servicios del hogar                      | I_HOGAR             | Ingreso mensual total del hogar             | Discreta | Numérica    |
+| Servicios del hogar                      | CANT_PERSONAS_HOGAR | Ingreso mensual total del hogar             | Discreta | Numérica    |
 
 ```{r}
 
@@ -128,7 +129,7 @@ vivienda <- files[[6]] # Vivienda
 carac_cols <- c('ï..DIRECTORIO', 'SECUENCIA_P', "SECUENCIA_ENCUESTA", 'P6051', 'P6020', 'P6040', 'P5502', 'P6080', 'P1895')
 edu_cols <- c('ï..DIRECTORIO', 'SECUENCIA_P', "SECUENCIA_ENCUESTA", 'P8587')
 vivienda_cols <- c('ï..DIRECTORIO', 'REGION', 'P8520S1A1')
-servicios_cols <- c('ï..DIRECTORIO', 'SECUENCIA_ENCUESTA', 'I_HOGAR')
+servicios_cols <- c('ï..DIRECTORIO', 'SECUENCIA_ENCUESTA', 'I_HOGAR', 'CANT_PERSONAS_HOGAR')
 
 ###
 
