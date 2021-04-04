@@ -155,6 +155,14 @@ labeled_input <- all_input %>% left_join(labeled, by = c('ï..DIRECTORIO', 'SECU
 # Removemos datos anómalos basados en la columna I_HOGAR
 clean_labeled_input <- labeled_input %>% select(-c("ï..DIRECTORIO", "SECUENCIA_P", "SECUENCIA_ENCUESTA", "P6051")) %>% filter(I_HOGAR < 100000000)
 
+clean_labeled_input$P6020 <- as.factor(clean_labeled_input$P6020)
+clean_labeled_input$P5502 <- as.factor(clean_labeled_input$P5502)
+clean_labeled_input$P6080 <- as.factor(clean_labeled_input$P6080)
+clean_labeled_input$P1895 <- as.factor(clean_labeled_input$P1895)
+clean_labeled_input$P8587 <- as.factor(clean_labeled_input$P8587)
+clean_labeled_input$REGION <- as.factor(clean_labeled_input$REGION)
+clean_labeled_input$P8520S1A1 <- as.factor(clean_labeled_input$P8520S1A1)
+
 write.csv(clean_labeled_input,"../db/labeled_input.csv", row.names = FALSE)
 ```
 
