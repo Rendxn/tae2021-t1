@@ -4,94 +4,209 @@ output: html_document
 ---
 
 
-```{r}
+```{r import-dependencies, warning=FALSE, message=FALSE, echo = FALSE}
 library(dplyr)
 library(knitr)
-library(ggplot2)
 ```
 
-
-
 # Base de datos: 
-La bases de datos fue tomada de la Encuesta Nacional de calidad de vida en Colombia por el Dane y despues de un proceso de limpieza y depuracion de los datos. Hemos selecciona las siquientes variables de interes: 
+La base de datos fue tomada de la Encuesta Nacional de calidad de vida en Colombia por el DANE y después de un proceso de limpieza y depuración de los datos. Hemos selecciona las siguientes variables de interés: 
 
 * **P6020:** Sexo 
 * **P6040:** Edad 
 * **P5502:** Estado civil   
 * **P6080:** Pueblo o etnia   
-* **P1895:** Nivel de satisfacción de vida  
 * **P8587:** Nivel educativo
 * **I_HOGAR:** Ingreso mensual total del hogar 
-* **I_UGASTO:** Ingreso mensual total de la unidad de gasto
-* **REGION:** Region
-* **P8520S1:** Energia Electrica
+* **REGION:** Región
 * **P8520S1A1:** Estrato
 * **HIJOS:** Hijos
 
-```{r}
+```{r echo = FALSE}
+#Lectura de la base de datos
 labeled <- read.csv("../db/labeled_input.csv", header = TRUE, sep = ",")
-data <- labeled %>% select(!P6051)
-data <- data.frame(data)
-
-#data %>% select(P6051) %>% filter(P6051 == 2) %>% count()
+data <- data.frame(labeled)
 ```
 
 # Medidas de localizacion 
-```{r}
-data_n  <- data %>% select(P6040, I_HOGAR, I_UGASTO, HIJOS)
-data_c  <- data %>% select(P6020, P5502, P6080, P1895, P8587, REGION, P8520S1, P8520S1A1)
+```{r echo = FALSE}
+#data_n variables numericas
+data_n  <- data %>% select(P6040, I_HOGAR, CANT_PERSONAS_HOGAR, HIJOS)
+#data_c variables categoricas 
+data_c  <- data %>% select(P6020, P5502, P6080, P8587, REGION, P8520S1A1)
 
-colnamesdatan <- c("Edad", "Ingreso mensual del Hogar", "Ingreso total unidad de Gasto", "Hijos")
-colnamesdatac <- c("Sexo", "Estado civil", "Etnia", "Satisfaccion de vida", "Nivel Educativo", "Region", "Energia Electrica", "Estrato")
+#Nombres de las columnas de data_n y data_c 
+colnamesdatan <- c("Edad", "Ingreso mensual del Hogar", "Personas en el hogar", "Hijos")
+colnamesdatac <- c("Sexo", "Estado civil", "Etnia", "Nivel Educativo", "Region", "Estrato")
 
+#calculo de la desviacion estandar 
 sd_f <- function(data) {
   sd(data, na.rm = TRUE)
 }
 
+#Resumen numericos 
 kable(summary(data_n), caption = "Medidas de localizacion", col.names = colnamesdatan)
 kable(t(apply(data_n, 2, sd_f)), caption = "Desviaciones Estandar", col.names = colnamesdatan)
 
 ```
-* La edades de las cabezas de hogares encuestadas en colombia se encuentra en un rango de **13 anos** a **106 anos** con  promedio de **49 anos**  de edad que varian en **+- 16 anos** . 
+* Las edades de las cabezas de hogares encuestadas en Colombia se encuentra en un rango de **13 años** a **106 años** con promedio de **49 años**  de edad que varían en **+- 16 años** . 
 
-* Los ingresos mensuales de los hogares colombianos encuestados se encuentran en un rango de **530.000** a **284.600.000  pesos colombianos** con un promedio de **1.726.408 pesos colombianos** por hogar que varian en **+- 2.948.921 pesos colombianos** .
+* Los ingresos mensuales de los hogares colombianos encuestados se encuentran en un rango de **530.000** a **284.600.000 pesos colombianos** con un promedio de **1.726.408 pesos colombianos** por hogar que varían en **+- 2.948.921 pesos colombianos**. Se hace énfasis en que un valor que describe mejor los ingresos mensuales de un hogar colombiano es la **mediana** que nos indica que el 50% de los hogares encuestados tienen ingresos mensuales de **1.021.667 pesos Colombianos** .
 
-* Los hijos de los hogares colombianos encuestados se encuentran en un rango de **0 hijos** a **11 hijos** con un promedio de  **1 hijo** por hogar y varian  en **+- 1 hijo**,
+* El numero de personas en los hogares Colombianos encuestados se encuentran en un rango de **1 persona** a **19 personas** por hogar con un promedio de **3 personas**  por hogar que varían **+- 2 personas**.  
+
+* Los hijos de los hogares colombianos encuestados se encuentran en un rango de **0 hijos** a **11 hijos** con un promedio de  **1 hijo** por hogar y varían  en **+- 1 hijo**.
 
 
 
-```{r}
-#sexo 1: hombre  2:mujer
+### Variable Sexo (P6020)
 
-# df <- data.frame(data_c$P6020)
-# pie(table(df), 
-#     col = c("grey", "pink"),
-#     main = "Sexo")
+A continuación se muestra el conteo de la variable sexo con  $1$ siendo  *Hombre* y $2$ siendo *Mujer* mostrando una variable dicotómica con una muestra de mas hombres que mujeres 
 
+```{r echo = FALSE}
+#Formato en tipo de tabla 
+table_f <- function(data, colname) {
+  frec <- as.data.frame(table(data))
+  frec_abs <- as.data.frame(prop.table(table(data)))
+  colnames(frec) <- c(colname, "Frecuencia")
+  colnames(frec_abs) <- c(colname, "Frecuencia.Abs. ")
+  frecuency <- merge(frec, frec_abs, by = colname)
+  return(kable(frecuency))
+}
+
+#tabla de la variable sexo
+table_f(data$P6020, 'Sexo')
 ```
-```{r}
+
+
+### Variable Estado Civil (P5502)
+
+* $1$ No está casado(a) y vive en pareja hace menos de dos años
+* $2$ No está casado(a) y vive en pareja hace dos años o más 
+* $3$ Está viudo(a) 
+* $4$ Está separado(a) o divorciado(a)
+* $5$ Está soltero(a)
+* $6$ Está casado(a)
+
+De la muestra se puede ver que aproximadamente el 35% de los encuestados no estan casados y viven en pareja hace mas de 2 años
+
+```{r echo = FALSE}
+#table de la variable Estado Civil
+table_f(data$P5502, 'Estado Civil')
+```
+### Variable Etnia (P6080)
+
+* $1$ Indígena
+* $2$ Gitano(a) (Rom)
+* $3$ Raizal del archipiélago de San Andrés, Providencia y Santa Catalina 
+* $4$ Palenquero (a) de San Basilio
+* $5$ Negro (a), mulato (a)(afrodescendiente),afrocolombiano(a) 
+* $6$ Ninguno de los anteriores
+
+En cuanto a la etnia , el 80% no pertencen a ninguna etnia o pueblo especifico de alguno de los presentados por la encuesta 
+
+
+```{r echo = FALSE}
+
+#tabla de la variable Etnia
+table_f(data$P6080, 'Etnia')
+```
+
+
+
+### Variable Región  (REGION)
+
+Pregunta relacionada a la región en que se encuentra el hogar de la persona encuestada, donde; 
+
+* $1$ Caribe
+* $2$ Oriental 
+* $3$ Central
+* $4$ Pacifica(sin valle)
+* $5$ Bogota 
+* $6$ Antioquia
+* $7$ Valle del Cauca 
+* $8$ San Andrés 
+* $9$ Orinoquía - Amazonía 
+
+Se puede ver que la región con mayor cantidad de encuestados pertenece a la región $Caribe$ seguido por la región $Central$, ademas,las regiones con menos encuestados son $San Andrés$ y $Bogota$. Probablemente debido a la extención de tierra de las dos regiones.   
+
+```{r echo = FALSE}
+#tabla de la variable Region 
+table_f(data$REGION, 'Region')
+```
+
+### Variable Estrato (P8520S1A1)
+
+Pregunta relacionada con el estrato en que se encuentra el hogar de la persona encuestada, basado en la información presentada por el recibo de servicios públicos de energía eléctrica, donde:
+
+* $0$ Recibos sin estrato o el servicio es pirata
+* $1$ Bajo - Bajo
+* $2$ Bajo 
+* $3$ Medio - Bajo
+* $4$ Medio
+* $5$ Medio - Alto 
+* $6$ Alto
+* $8$ Planta eléctrica  
+* $9$ No conoce el estrato o no cuenta con recibo de pago. 
+
+Notese que los valores categoricos de nivel se encuentran entre los valores $0 - 6$, mientras que los valores $8$ y $9$ se refieren al uso de una planta eléctrica o el desconocimiento de la unformación. Por otro lado se puede ver que la mayoria de encuestados pertencen a a los estratos $bajo-bajo$ y $bajo$ según el recibo de servicios públicos   
+
+```{r echo = FALSE}
+#tabla de la variable Estrato
+table_f(data$P8520S1A1, 'Estrato')
+```
+
+
+### Variable Nivel Educativo (P8587)
+
+Pregunta relacionada al nivel educativo más alto alcanzado por la cabeza del hogar y el último año o grado aprobado en este nivel, donde; 
+
+* $1$ Ninguno 
+* $2$ Preescolar 
+* $3$ Básica Primaria $(1º - 5º)$
+* $4$ Básica secundaria $(6º-9º)$
+* $5$ Media $(10º-13º)$ 
+* $6$ Técnico sin título
+* $7$ Técnico con título
+* $8$ Tecnológico sin título
+* $9$ Tecnológico con título
+* $10$Universitario sin titulo
+* $11$Universitario con titulo
+* $12$Postgrado sin titulo
+* $13$ Postgrado con titulo
+
+Los valores $3$,$4$ y $5$ corresponden a mas del $70\%$ de la población, encontrandose un nivel educativo promedio en basica secundaria, y media.
+
+```{r echo = FALSE}
+#tabla de la variable Educacion
+table_f(data$P8587, 'Nivel Educación')
+```
+
+
+```{r echo = FALSE}
+
+#Grid de tamaño 2x3 
 par(mfrow = c(2, 3))
 
+
 hist(data_n$P6040, main = "Edad", xlab = "Años", ylab = "Frecuencia Relativa")
-# 
-# hist(data_n$I_HOGAR, main = "Ingresos mensuales en el Hogar", 
-#      xlab = "Pesos Colombianos", xlim = c(0, 10000000),
-#      ylab = "Frecuencia Relativa", ylim = c(0, 93000000))
-plot(data_n$I_HOGAR, main = "Ingreso mensuales en el Hogar",
-     xlab = "Pesos Colomabianos", ylab = "frecuencia relativa")
 
-#hist(data_n$I_UGASTO)
-boxplot(data_n$I_HOGAR)
+boxplot(data_n$I_HOGAR, main = "Ingresos Mensuales en el Hogar", xlab = "Pesos Colombianos",
+        ylim = c(0, 10000000))
 
-hist(data_n$HIJOS, main = "Hijos", xlab = "Numeros de hijos", ylab ="Frecuencia Relativa")
 
 t_estrato <- table(data_c$P8520S1A1)
 g_estrato <- barplot(t_estrato,
                      main = "Estrato",
                      ylab = "Frecuencia Relativa",
                      las = 1)
-#text(x = g_estrato, y = t_estrato, pos=3, cex=0.8, 
-             # col="black", label=round(g_estrato, 4))
+
+
+hist(data_n$CANT_PERSONAS_HOGAR, main = "Personas en el Hogar", xlab = "Numero de hijos",
+      ylab = "Frecuencia Relativa")
+
+hist(data_n$HIJOS, main = "Hijos", xlab = "Numeros de hijos", ylab ="Frecuencia Relativa")
+
 
 t_sexo <-prop.table(table(data_c$P6020))
 g_sexo <- barplot(t_sexo, 
@@ -105,23 +220,37 @@ g_sexo <- barplot(t_sexo,
 text(x = g_sexo,  y=t_sexo, pos=3, cex=0.8, col="black",
      label=round(t_sexo, 4))
 
-# t_happy <- prop.table(table(data_c$P8520S1))
-# g_happy <- barplot(t_happy)
-
 ```
 
 
-```{r}
- # data_n %>% select(I_HOGAR) %>% filter(I_HOGAR > 100000000) %>% count()
-# db
-# boxplot(db)
+Del grafico anterior se observa:
 
+* La  **Edades** de las cabezas de hogar encuestadas se concentran en **35** y **55 años** de **edad**.
+
+* Los **Ingresos mensuales** en los hogares colombianos presentan valores **Extremos Atípicos** algo que se esperaba
+después de ver los resúmenes numéricos donde el promedio de los ingresos mensuales se encontraba **1.726.408 pesos colombianos** y variaba **+- 2.948.921 pesos colombianos**.
+
+* Los **Estratos** predominantes en la encuesta de los hogares colombiano son el **estrato 1**, **estrato 2** y **estrato 3**. 
+
+* La mayoría de hogares colombianos tiene un numero de **personas** en el hogar entre **1 persona** y **5 personas** por hogar.  
+
+* La mayoría de hogares colombianos tiene un numero de **hijos**  entre **0 hijos** y **2 hijos**  por hogar. 
+
+* El **64%** de las cabezas de hogar encuestadas son **Hombres** y el **36%** son **Mujeres**.
+
+
+```{r echo = FALSE}
+#data_n %>% select(I_HOGAR) %>% filter(I_HOGAR < 100000000) %>% count()
 ```
 
-```{r}
 
-data_s <- data %>% select(P6040, P5502, I_HOGAR, P6020,  P8587, REGION,  P8520S1A1, HIJOS,)
+### Relaciones entre las variables y nuestra etiqueta (Hijos)
 
+Variables Categoricas:
+
+```{r echo = FALSE}
+data_s <- data %>% select(P6040, P5502, P6020,  P8587, REGION,  P8520S1A1, HIJOS,)
+colnames(data_s) <- c("Estado Civil", "Sexo", "Educacion", "Region", "Estrato", "Hijos")
 
 panel.hist <- function(x, ...)
 {
@@ -146,13 +275,47 @@ panel.cor <- function(x, y, digits = 2, prefix = "", cex.cor, ...)
 pairs(data_s,lower.panel = panel.smooth, upper.panel = panel.cor,diag.panel = panel.hist)
 ```
 
+No se alcanza a percibir algún tipo de relación en el grafico anterior. 
 
-```{r}
-#pairs(prueba %>% select(P6040, HIJOS))
-# round(cor(prueba %>% select(P6040, HIJOS)), 2)
-cor(x=data$P6040, y=data$HIJOS)
-#cor(x=data$I_HOGAR, y=data$HIJOS)
 
+Variables Continuas: 
+
+```{r echo = FALSE}
+data_s2 <- data %>% select(P6040, I_HOGAR, CANT_PERSONAS_HOGAR, HIJOS)
+colnames(data_s2) <- c("Edad", "Ingresos del Hogar", "#Personas en el Hogar", "Hijos")
+
+panel.hist <- function(x, ...)
+{
+    usr <- par("usr"); on.exit(par(usr))
+    par(usr = c(usr[1:2], 0, 1.5) )
+    h <- hist(x, plot = FALSE)
+    breaks <- h$breaks; nB <- length(breaks)
+    y <- h$counts; y <- y/max(y)
+    rect(breaks[-nB], 0, breaks[-1], y, col = "gray", ...)
+}
+panel.cor <- function(x, y, digits = 2, prefix = "", cex.cor, ...)
+{
+    usr <- par("usr"); on.exit(par(usr))
+    par(usr = c(0, 1, 0, 1))
+    r <- abs(cor(x, y))
+    txt <- format(c(r, 0.123456789), digits = digits)[1]
+    txt <- paste0(prefix, txt)
+    if(missing(cex.cor)) cex.cor <- 0.8/strwidth(txt)
+    text(0.5, 0.5, txt, cex = cex.cor * r)
+}
+
+pairs(data_s2,lower.panel = panel.smooth, upper.panel = panel.cor,diag.panel = panel.hist)
+```
+
+Se observan una posible relación fuerte entre el **Número de personas en el hogar** y la variable hijo. 
+
+
+
+```{r echo = FALSE}
+kable(cor(x=data$CANT_PERSONAS_HOGAR, y=data$HIJOS), col.names = "Correlacion de las Peronas del Hogar entre el Numero de Hijos")
 
 ```
 
+
+
+Efectivamente dichas variables están relacionadas  
