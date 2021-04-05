@@ -13,5 +13,10 @@ knitr::opts_chunk$set(echo = TRUE)
 
 ```
 
+```{r, child=c('analisis_descriptivo.Rmd')}
+```
+
 ```{r, child=c('modeloKNN.Rmd')}
 ```
+
+# Observaciones - Análisis Posterior - Conclusiones

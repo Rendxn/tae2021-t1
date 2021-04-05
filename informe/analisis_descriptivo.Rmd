@@ -4,7 +4,7 @@ output: html_document
 ---
 
 
-```{r import-dependencies, warning=FALSE, message=FALSE, echo = FALSE}
+```{r, warning=FALSE, message=FALSE, echo = FALSE}
 library(dplyr)
 library(knitr)
 ```

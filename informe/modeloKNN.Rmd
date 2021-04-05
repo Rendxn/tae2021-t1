@@ -5,16 +5,38 @@ bibliography: bibliography.bib
 csl: ieee-with-url.csl
 ---
 # Importe de librería para el modelo de clasificación
-```{r}
+```{r, warning=FALSE, message=FALSE, echo = FALSE}
 # Caret para el modelo
 library(caret)
 # Para entrenar el modelo con multithreading
 library(parallel)
 library(doParallel)
+library(kableExtra)
 ```
 # Modelo de clasificación utilizando KNN
+---
+Debido a la cantidad de variables utilizadas $(10)$ ,y el tamaño final de la muestra $(93992)$ el entrenamiento y la búsqueda del $K$ optimo es una tarea complicada para desarrollarla por métodos comunes como ciclos iterativos, por lo cual, se da uso de la librería $Caret$^[1:https://topepo.github.io/caret/] de $R$, la librería, cuenta con distintos modelos para regresión y clasificación, junto con diferentes parámetros que permiten calibrar el entrenamiento al gusto del modelador ayudando a modificar el tipo de entrenamiento,  e l preprocesamiento, parámetros específicos de cada modelo (como los vecinos cercanos $K$ para KNN) ,entre otras. Para el entrenamiento de nuestro modelo por el método $KNN$ era preciso saber el valor $K$ que, aunque la librería $Caret$  lo permitía, el tiempo transcurrido en cada entrenamiento y los recursos computaciones que implicaban impedían hacer pruebas de manera continua, tardando aproximadamente $15$ minutos por entrenamiento, ya que la librería genera distintos modelos hasta encontrar el K que genere el mejor modelo entre todos, por esta razón, se optó por usar una herramienta externa que permitiera usar GPU que ayudaran a optimizar el entrenamiento de los diferentes modelos y hacer las pruebas a diferentes configuraciones.
+
+### Google Colab y PyCaret 
+
+$Google Colab$ ^[1:https://colab.research.google.com/] es un entorno de desarrollo en línea de lenguaje Python que da al usuario herramientas como GPUs gratuitas, notebooks sin instalación local, acceso en línea, y disposición de librerías Python, de esta manera, $Colab$ permitió el entrenamiento de forma remota de nuestro modelo de prueba. 
+Además, era necesaria una librería que trabajara de forma parecida a $Caret$, en lenguaje Python, por esto, se usa $PyCaret$ ^[2:https://pycaret.org/] , esta es una librería de acceso libre enfocada en machine learning con el propósito de implementar las herramientas de $Caret$ en un entorno Python, funcionando de la misma forma y manteniendo su simplicidad en aplicación.
+Dando uso de estas herramientas se procede a buscar el K optimo subiendo la base de datos a un notebook de $Colab$ como un dataframe, y por medio de $Pycaret$  se procede a entrenar el modelo con los siguientes parámetros:
+
+* categorical_features : Se señala las columnas que son categóricas
+* numerical_features: Se señalan las columnas que son numéricas 
+* Target: Se establece la columna objetivo o de etiqueta para el modelo 
+* use_gpu: Se habilita el uso de GPU para el entrenamiento 
+
+De esta forma  la librería, reconoce el tipo de dato ingresado como categórico o numérico,  genera un conjunto de entrenamiento  de $47981$ datos, y un conjunto de test de $20564$, haciendo una distribución $70\%-30\%$ respectivamente, los conjuntos formados llevan un preprocesamiento donde normaliza las variables numéricas y permite el correcto funcionamiento del modelo, generando un $K$ optimo igual a $5$, valor que es de gran interés puesto que es el valor que se asignara a la librería $Caret$ y generará el modelo final.
+
 
 ## Muestreo y separación en entrenamiento y validación
+---
+Se fija la semilla generadora de números aleatorios para garantizar la reproducibilidad de los resultados.
+
+Adicionalmente, se separa el marco de datos en datos de entrenamiento y datos de validación o prueba. La proporción utilizada fue de $0.8$ para entrenamiento y $0.2$ para validación.
+
 ```{r}
 # Semilla para generación de números aleatorios
 set.seed(20210406)
@@ -28,19 +50,25 @@ test <- clean_labeled_input[-indexTraining,]
 
 ## Preprocesamiento
 ---
-Debido a que KNN es muy sensible a la distancia entre los datos y las unidades de estos, es necesario normalizar los datos antes de entrenar el modelo. El paquete caret hace este paso de normalización por nosotros.
+Adicional al preprocesamiento realizado anteriormente para la obtención del conjunto de datos inicial, se realiza un pre-procesamiento específico al modelo KNN. Debido a que KNN es muy sensible a la distancia entre los datos y las unidades de estos, es necesario normalizar los datos antes de entrenar el modelo. El paquete caret hace este paso de normalización por nosotros, como una de las opciones a la hora de entrenar el modelo.
+
+Debido a que se tiene una cantidad significativa de datos $(93993)$, se decide no hacer imputación de datos, y en cambio, omitir los valores que contengan información incompleta.
 
 ## Entrenamiento y control
 ---
+Se realiza el entrenamiento del modelo utilizando el método KNN, sin utilizar ningún método de re-muestreo y haciendo el pre-procesamiento mencionado anteriormente (normalización).
 
 ```{r}
+# Habilitar cluster para trabajo en paralelo
 cluster <- makeCluster(detectCores() - 2) # habilitar n - 2 threads de la cpu
 registerDoParallel(cluster)
+# none: sin resampling ni validación cruzada
 ctrl <- trainControl(method="none", allowParallel = TRUE)
+# modelo
 knn_fit <- train(HIJOS ~., data = train, method = "knn", trControl = ctrl, preProcess = c("center","scale"), tuneGrid=data.frame(k=5), na.action = na.omit)
+# detener procesamiento en paralelo
 stopCluster(cluster)
 ```
-
 ```{r}
 # Guardamos el modelo
 saveRDS(knn_fit, './knnModel.rds')
@@ -48,12 +76,19 @@ saveRDS(knn_fit, './knnModel.rds')
 knn_fit
 ```
 ## Validación y pruebas
+---
+Se utiliza el conjunto de prueba para comprobar la validez del modelo y se visualiza su desempeño con la matriz de confusión.
 ```{r}
+# Probamos el modelo con el conjunto de prueba
 test_pred <- predict(knn_fit, newdata = test, na.action = na.omit)
 ```
 ### Matriz de confusión
+
+Se observa que la precisión del modelo es de aproximadamente 0.65.
 ```{r}
+# omitimos las filas NA
 test_clean <- na.omit(test)
 cm <- confusionMatrix(test_pred, test_clean$HIJOS)
-cm
+knitr::kable(cm$table) %>% kable_material_dark()
+knitr::kable(cm$overall) %>% kable_material_dark(c("striped"))
 ```
