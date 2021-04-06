@@ -101,7 +101,16 @@ ui <-  navbarPage("TAE 2021 - 1",
                           uiOutput('prediction')
                       )
                   )
-                  )
+                  ),
+                  tabPanel('Informe', div(
+                      a('Enlace del informe en RPubs', href = 'https://rpubs.com/sarendongi/tae2021-t1', target='_blank')
+                  )),
+                  tabPanel('Repositorio', div(
+                      a('Enlace del repositorio en GitHub', href = 'https://github.com/Rendxn/tae2021-t1', target='_blank')
+                  )),
+                  tabPanel('Video', div(
+                      a('Enlace del video', target='_blank')
+                  ))
 )
 
 server <- function(input, output) {
