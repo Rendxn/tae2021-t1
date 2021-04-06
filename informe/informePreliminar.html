@@ -448,7 +448,7 @@ write.csv(clean_labeled_input,&quot;../db/labeled_input.csv&quot;, row.names = F
 </div>
 <div id="base-de-datos" class="section level1">
 <h1>Base de datos:</h1>
-<p>La base de datos fue tomada de la Encuesta Nacional de calidad de vida en Colombia <span class="citation">[1]</span> y después de un proceso de limpieza y depuración de los datos, hemos seleccionado las siguientes variables de interés:</p>
+<p>La base de datos fue tomada de la Encuesta Nacional de calidad de vida en Colombia <span class="citation">[1]</span> y después de un proceso de limpieza y depuración de los datos, hemos seleccionado las siguientes variables de interés de acuerdo con la literatura <span class="citation">[3]</span>:</p>
 <ul>
 <li><strong>P6020:</strong> Sexo</li>
 <li><strong>P6040:</strong> Edad</li>
@@ -919,7 +919,7 @@ write.csv(clean_labeled_input,&quot;../db/labeled_input.csv&quot;, row.names = F
 <li><p>Los <strong>Ingresos mensuales</strong> en los hogares colombianos presentan valores <strong>Extremos Atípicos</strong> algo que se esperaba después de ver los resúmenes numéricos donde el promedio de los ingresos mensuales se encontraba <strong>1.726.408 pesos colombianos</strong> y variaba <strong>+- 2.948.921 pesos colombianos</strong>.</p></li>
 <li><p>Los <strong>Estratos</strong> predominantes en la encuesta de los hogares colombiano son el <strong>estrato 1</strong>, <strong>estrato 2</strong> y <strong>estrato 3</strong>.</p></li>
 <li><p>La mayoría de hogares colombianos tiene un numero de <strong>personas</strong> en el hogar entre <strong>1 persona</strong> y <strong>5 personas</strong> por hogar.</p></li>
-<li><p>La mayoría de hogares colombianos tiene un numero de <strong>hijos</strong> entre <strong>0 hijos</strong> y <strong>2 hijos</strong> por hogar.</p></li>
+<li><p>La mayoría de hogares colombianos tiene un numero de <strong>hijos</strong> entre <strong>0 hijos</strong> y <strong>2 hijos</strong> por hogar, lo cual es cercano a un estudio realizado en Cauca <span class="citation">[4]</span>.</p></li>
 <li><p>El <strong>64%</strong> de las cabezas de hogar encuestadas son <strong>Hombres</strong> y el <strong>36%</strong> son <strong>Mujeres</strong>.</p></li>
 </ul>
 </div>
@@ -943,7 +943,7 @@ write.csv(clean_labeled_input,&quot;../db/labeled_input.csv&quot;, row.names = F
 </tr>
 </tbody>
 </table>
-<p>Efectivamente dichas variables están relacionadas</p>
+<p>Efectivamente dichas variables están relacionadas.</p>
 </div>
 </div>
 <div id="importe-de-librería-para-el-modelo-de-regresión" class="section level1">
@@ -1204,7 +1204,7 @@ RMSE(pred = test_pred, obs = test_clean$HIJOS)</code></pre>
 <p>El Coeficiente R2 para el conjunto de pruebas es el siguiente:</p>
 <pre class="r"><code>R2(pred = test_pred, obs = test_clean$HIJOS)</code></pre>
 <pre><code>## [1] 0.644326</code></pre>
-<p>Este coeficiente representa la proporción de varianza en los resultados que nuestro modelo es capaz de explicar y nos da información sobre qué tan bien se ajusta el modelo a los datos <span class="citation">[3]</span>.</p>
+<p>Este coeficiente representa la proporción de varianza en los resultados que nuestro modelo es capaz de explicar y nos da información sobre qué tan bien se ajusta el modelo a los datos <span class="citation">[5]</span>.</p>
 <div id="refs" class="references csl-bib-body">
 <div id="ref-DANE2020a" class="csl-entry">
 <div class="csl-left-margin">[1] </div><div class="csl-right-inline">DANE, <span>“<span class="nocase">Encuesta Nacional de Calidad de Vida 2019</span>.”</span> 2020 [Online]. Available: <a href="http://microdatos.dane.gov.co/index.php/catalog/678/study-description">http://microdatos.dane.gov.co/index.php/catalog/678/study-description</a></div>
@@ -1212,8 +1212,14 @@ RMSE(pred = test_pred, obs = test_clean$HIJOS)</code></pre>
 <div id="ref-DANE2020" class="csl-entry">
 <div class="csl-left-margin">[2] </div><div class="csl-right-inline">DANE, <span>“<span class="nocase">ARCHIVO NACIONAL DE DATOS COLOMBIA - Encuesta Nacional de Calidad de Vida - ECV 2019</span>,”</span> pp. 1–904, 2020 [Online]. Available: <a href="http://microdatos.dane.gov.co/index.php/catalog/678/related_materials">http://microdatos.dane.gov.co/index.php/catalog/678/related_materials</a></div>
 </div>
+<div id="ref-Robayo2019" class="csl-entry">
+<div class="csl-left-margin">[3] </div><div class="csl-right-inline">E. Robayo, <span>“<span>TIPOLOG<span>Í</span>AS DEL HOGAR EN COLOMBIA (2000-2015): CARACTERISTICAS SOCIODEMOGRAFICAS DE LAS MUJERES</span>,”</span> <em>Entrevistas</em>, pp. 5–6, 2019. </div>
+</div>
+<div id="ref-Gomez2015" class="csl-entry">
+<div class="csl-left-margin">[4] </div><div class="csl-right-inline">and, A.-M. and Gómez-Sánchez, C.-L. Fajardo-Hoyos, and J.-I. Sarmiento-Castillo, <span>“<span class="nocase">Composici<span class="nocase">ó</span>n de los hogares y niveles de gastos en bienes y servicios b<span class="nocase">á</span>sicos en el Departamento del Cauca, Colombia</span>,”</span> <em>Semestre Econ<span>ó</span>mico</em>, vol. 18, no. 38, pp. 67–104, 2015, doi: <a href="https://doi.org/10.22395/seec.v18n38a3">10.22395/seec.v18n38a3</a>. </div>
+</div>
 <div id="ref-ref1" class="csl-entry">
-<div class="csl-left-margin">[3] </div><div class="csl-right-inline"><span>“<span class="nocase">Coefficient of Determination</span>,”</span> in <em>The concise encyclopedia of statistics</em>, New York, NY: Springer New York, 2008, pp. 88–91 [Online]. Available: <a href="https://doi.org/10.1007/978-0-387-32833-1_62">https://doi.org/10.1007/978-0-387-32833-1_62</a></div>
+<div class="csl-left-margin">[5] </div><div class="csl-right-inline"><span>“<span class="nocase">Coefficient of Determination</span>,”</span> in <em>The concise encyclopedia of statistics</em>, New York, NY: Springer New York, 2008, pp. 88–91 [Online]. Available: <a href="https://doi.org/10.1007/978-0-387-32833-1_62">https://doi.org/10.1007/978-0-387-32833-1_62</a></div>
 </div>
 </div>
 </div>

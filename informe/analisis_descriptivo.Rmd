@@ -10,7 +10,7 @@ library(knitr)
 ```
 
 # Base de datos: 
-La base de datos fue tomada de la Encuesta Nacional de calidad de vida en Colombia [@DANE2020a] y después de un proceso de limpieza y depuración de los datos, hemos seleccionado las siguientes variables de interés: 
+La base de datos fue tomada de la Encuesta Nacional de calidad de vida en Colombia [@DANE2020a] y después de un proceso de limpieza y depuración de los datos, hemos seleccionado las siguientes variables de interés de acuerdo con la literatura [@Robayo2019]: 
 
 * **P6020:** Sexo 
 * **P6040:** Edad 
@@ -234,7 +234,7 @@ después de ver los resúmenes numéricos donde el promedio de los ingresos mens
 
 * La mayoría de hogares colombianos tiene un numero de **personas** en el hogar entre **1 persona** y **5 personas** por hogar.  
 
-* La mayoría de hogares colombianos tiene un numero de **hijos**  entre **0 hijos** y **2 hijos**  por hogar. 
+* La mayoría de hogares colombianos tiene un numero de **hijos**  entre **0 hijos** y **2 hijos**  por hogar, lo cual es cercano a un estudio realizado en Cauca [@Gomez2015]. 
 
 * El **64%** de las cabezas de hogar encuestadas son **Hombres** y el **36%** son **Mujeres**.
 
@@ -318,4 +318,4 @@ kable(cor(x=data$CANT_PERSONAS_HOGAR, y=data$HIJOS), col.names = "Correlacion de
 
 
 
-Efectivamente dichas variables están relacionadas  
+Efectivamente dichas variables están relacionadas.
