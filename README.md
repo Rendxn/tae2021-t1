@@ -5,4 +5,4 @@ App:
 https://il5kdx-santiago0rend0n.shinyapps.io/Hijos-Hogar-Colombiano-KNN/
 
 Rpubs:
-https://rpubs.com/IThiagoRo/750544
+https://rpubs.com/sarendongi/tae2021-t1

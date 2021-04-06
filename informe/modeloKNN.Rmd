@@ -14,11 +14,11 @@ library(doParallel)
 library(kableExtra)
 ```
 # Modelo de regresión utilizando KNN
----
+
 El método de KNN, aunque utilizado generalmente para problemas de clasificación, puede ser también usado para casos de regresión. KNN utiliza las características de sus K vecinos más cercanos para hacer una predicción.
 
 ## Muestreo y separación en entrenamiento y validación
----
+
 Se fija la semilla generadora de números aleatorios para garantizar la reproducibilidad de los resultados.
 
 Adicionalmente, se separa el marco de datos en datos de entrenamiento y datos de validación o prueba. La proporción utilizada fue de $0.8$ para entrenamiento y $0.2$ para validación.
@@ -35,15 +35,15 @@ test <- clean_labeled_input[-indexTraining,]
 ```
 
 ## Preprocesamiento
----
+
 Adicional al preprocesamiento realizado anteriormente para la obtención del conjunto de datos inicial, se realiza un pre-procesamiento específico al modelo KNN. Debido a que KNN es muy sensible a la distancia entre los datos y las unidades de estos, es necesario normalizar los datos antes de entrenar el modelo. El paquete `caret` hace este paso de normalización por nosotros, como una de las opciones a la hora de entrenar el modelo.
 
 Debido a que se tiene una cantidad significativa de datos $(93.993)$, se decide no hacer imputación de datos, y en cambio, omitir los valores que contengan información incompleta.
 
 ## Entrenamiento y control
----
+
 Se realiza el entrenamiento del modelo utilizando el método KNN, utilizando validación cruzada con 10 folds. Se prueban 5 modelos con diferentes valores de K, para ver cuál es el mejor valor de K. A esto se le conoce como **hyperparameter tuning**. Cada fold separa una parte aleatoria de los datos para entrenamiento y otra para validación de cada modelo.
-```{r echo=, message=FALSE, warning=FALSE, echo=FALSE}
+```{r, message=FALSE, warning=FALSE, echo=FALSE, eval=FALSE}
 # Habilitar cluster para trabajo en paralelo
 cluster <- makeCluster(detectCores() - 2) # habilitar n - 2 threads de la cpu
 registerDoParallel(cluster)
@@ -54,10 +54,15 @@ knn_fit <- train(HIJOS ~., data = train, method = "knn", trControl = ctrl, prePr
 # detener procesamiento en paralelo
 stopCluster(cluster)
 ```
-```{r}
+```{r, eval=FALSE}
 # Guardamos el modelo
 saveRDS(knn_fit, '../shiny/data/knnModel.rds')
 ```
+
+```{r, message=FALSE, warning=FALSE, echo=FALSE}
+knn_fit <- readRDS('../shiny/data/knnModel.rds')
+```
+
 
 Veamos qué valor de K obtuvo mejores resultados.
 
@@ -73,14 +78,14 @@ Según la optimización de parámetros, el mejor modelo es aquel con un valor de
 knitr::kable(knn_fit$results[2,]) %>% kable_material_dark()
 ```
 ## Validación y pruebas
----
+
 Se utiliza el conjunto de prueba para comprobar la validez del modelo y se visualiza su desempeño con los valores RMSE y R2.
 ```{r}
 # Probamos el modelo con el conjunto de prueba
 test_pred <- predict(knn_fit, newdata = test, na.action = na.omit)
 ```
 ### Medidas de desempeño
----
+
 Principalmente, se utilizaron dos métricas para evaluar el desempeño del modelo.
 
 #### RMSE (Raíz del error cuadrático medio)
