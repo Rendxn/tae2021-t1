@@ -60,11 +60,11 @@ files <- lapply(
 | Condiciones de vida del hogar y tenencia de bienes        | Hogar                   |
 | Uso de energéticos del hogar                              | Hogar                   |
 
-Con esta caracterización, podemos concluir que se encuestaron:
+Con esta caracterización, podemos notar que se encuestaron:
 
-* $93161$ viviendas.
-* $93993$ hogares.
-* $289558$ personas.
+* $93.161$ viviendas.
+* $93.993$ hogares.
+* $289.558$ personas.
 
 # Preprocesamiento de Datos
 
@@ -84,7 +84,7 @@ $$
 \end{cases}
 $$
 2. Agrupamos por hogar. Según los metadatos y la estructura de la encuesta 
-[@DirecciondeMetodologiayProduccionEstadistica2020], las claves de un hogar
+[@DANE2020], las claves de un hogar
 en las tablas de personas (como *Características y composición del hogar*)
 son `ï..DIRECTORIO` el cual es único para cada vivienda y `SECUENCIA_P`, el cual
 es único por cada hogar dentro de esa vivienda.

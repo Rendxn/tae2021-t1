@@ -10,7 +10,7 @@ library(knitr)
 ```
 
 # Base de datos: 
-La base de datos fue tomada de la Encuesta Nacional de calidad de vida en Colombia por el DANE y después de un proceso de limpieza y depuración de los datos. Hemos selecciona las siguientes variables de interés: 
+La base de datos fue tomada de la Encuesta Nacional de calidad de vida en Colombia [@DANE2020a] y después de un proceso de limpieza y depuración de los datos, hemos seleccionado las siguientes variables de interés: 
 
 * **P6020:** Sexo 
 * **P6040:** Edad 

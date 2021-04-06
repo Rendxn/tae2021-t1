@@ -36,9 +36,9 @@ test <- clean_labeled_input[-indexTraining,]
 
 ## Preprocesamiento
 ---
-Adicional al preprocesamiento realizado anteriormente para la obtención del conjunto de datos inicial, se realiza un pre-procesamiento específico al modelo KNN. Debido a que KNN es muy sensible a la distancia entre los datos y las unidades de estos, es necesario normalizar los datos antes de entrenar el modelo. El paquete caret hace este paso de normalización por nosotros, como una de las opciones a la hora de entrenar el modelo.
+Adicional al preprocesamiento realizado anteriormente para la obtención del conjunto de datos inicial, se realiza un pre-procesamiento específico al modelo KNN. Debido a que KNN es muy sensible a la distancia entre los datos y las unidades de estos, es necesario normalizar los datos antes de entrenar el modelo. El paquete `caret` hace este paso de normalización por nosotros, como una de las opciones a la hora de entrenar el modelo.
 
-Debido a que se tiene una cantidad significativa de datos $(93993)$, se decide no hacer imputación de datos, y en cambio, omitir los valores que contengan información incompleta.
+Debido a que se tiene una cantidad significativa de datos $(93.993)$, se decide no hacer imputación de datos, y en cambio, omitir los valores que contengan información incompleta.
 
 ## Entrenamiento y control
 ---
@@ -99,4 +99,4 @@ El Coeficiente R2 para el conjunto de pruebas es el siguiente:
 R2(pred = test_pred, obs = test_clean$HIJOS)
 ```
 
-Este coeficiente representa la proporción de varianza en los resultados que nuestro modelo es capaz de explicar y nos da información sobre qué tan bien se ajusta el modelo a los datos.
+Este coeficiente representa la proporción de varianza en los resultados que nuestro modelo es capaz de explicar y nos da información sobre qué tan bien se ajusta el modelo a los datos [@ref1].

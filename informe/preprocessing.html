@@ -56,28 +56,6 @@ if (window.hljs) {
 
 
 
-<style type="text/css">
-/* for pandoc --citeproc since 2.11 */
-div.csl-bib-body { }
-div.csl-entry {
-  clear: both;
-}
-.hanging div.csl-entry {
-  margin-left:2em;
-  text-indent:-2em;
-}
-div.csl-left-margin {
-  min-width:2em;
-  float:left;
-}
-div.csl-right-inline {
-  margin-left:2em;
-  padding-left:1em;
-}
-div.csl-indent {
-  margin-left: 2em;
-}
-</style>
 
 
 
@@ -306,7 +284,7 @@ files &lt;- lapply(
   1 &amp; \text{cuando } P6051 = 3 \\
   0 &amp; \text{en otro caso }
 \end{cases}
-\]</span> 2. Agrupamos por hogar. Según los metadatos y la estructura de la encuesta <span class="citation">[1]</span>, las claves de un hogar en las tablas de personas (como <em>Características y composición del hogar</em>) son <code>ï..DIRECTORIO</code> el cual es único para cada vivienda y <code>SECUENCIA_P</code>, el cual es único por cada hogar dentro de esa vivienda.</p>
+\]</span> 2. Agrupamos por hogar. Según los metadatos y la estructura de la encuesta <span class="citation"><strong>DANE2020?</strong></span>, las claves de un hogar en las tablas de personas (como <em>Características y composición del hogar</em>) son <code>ï..DIRECTORIO</code> el cual es único para cada vivienda y <code>SECUENCIA_P</code>, el cual es único por cada hogar dentro de esa vivienda.</p>
 <pre class="r"><code># Trae la tabla de Características y composición del hogar
 # donde se encuentra la variable P6051.
 carac_persona &lt;- files[[2]]
@@ -364,30 +342,16 @@ labeled &lt;-
 <td align="left">Numérica</td>
 </tr>
 <tr class="odd">
-<td align="left">Característiicas y composición del hogar</td>
-<td align="left">P1895</td>
-<td align="left">Nivel de satisfacción de vida</td>
-<td align="left">Discreta</td>
-<td align="left">Numérica</td>
-</tr>
-<tr class="even">
 <td align="left">Educación</td>
 <td align="left">P8587</td>
 <td align="left">Nivel educativo</td>
 <td align="left">Discreta</td>
 <td align="left">Numérica</td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td align="left">Datos de la vivienda</td>
 <td align="left">REGION</td>
 <td align="left">Región</td>
-<td align="left">Discreta</td>
-<td align="left">Numérica</td>
-</tr>
-<tr class="even">
-<td align="left">Datos de la vivienda</td>
-<td align="left">P8520S1</td>
-<td align="left">Energía eléctrica</td>
 <td align="left">Discreta</td>
 <td align="left">Numérica</td>
 </tr>
@@ -405,13 +369,6 @@ labeled &lt;-
 <td align="left">Discreta</td>
 <td align="left">Numérica</td>
 </tr>
-<tr class="odd">
-<td align="left">Servicios del hogar</td>
-<td align="left">I_UGASTO</td>
-<td align="left">Ingreso mensual total de la unidad de gasto</td>
-<td align="left">Discreta</td>
-<td align="left">Numérica</td>
-</tr>
 </tbody>
 </table>
 <pre class="r"><code># Cogemos cada tabla
@@ -421,10 +378,10 @@ servicios_hogar &lt;- files[[10]] # Hogar
 vivienda &lt;- files[[6]] # Vivienda
 
 # Definimos columnas a seleccionar de cada tabla
-carac_cols &lt;- c(&#39;ï..DIRECTORIO&#39;, &#39;SECUENCIA_P&#39;, &quot;SECUENCIA_ENCUESTA&quot;, &#39;P6051&#39;, &#39;P6020&#39;, &#39;P6040&#39;, &#39;P5502&#39;, &#39;P6080&#39;, &#39;P1895&#39;)
+carac_cols &lt;- c(&#39;ï..DIRECTORIO&#39;, &#39;SECUENCIA_P&#39;, &quot;SECUENCIA_ENCUESTA&quot;, &#39;P6051&#39;, &#39;P6020&#39;, &#39;P6040&#39;, &#39;P5502&#39;, &#39;P6080&#39;)
 edu_cols &lt;- c(&#39;ï..DIRECTORIO&#39;, &#39;SECUENCIA_P&#39;, &quot;SECUENCIA_ENCUESTA&quot;, &#39;P8587&#39;)
-vivienda_cols &lt;- c(&#39;ï..DIRECTORIO&#39;, &#39;REGION&#39;, &#39;P8520S1&#39;, &#39;P8520S1A1&#39;)
-servicios_cols &lt;- c(&#39;ï..DIRECTORIO&#39;, &#39;SECUENCIA_ENCUESTA&#39;, &#39;I_HOGAR&#39;, &#39;I_UGASTO&#39;)
+vivienda_cols &lt;- c(&#39;ï..DIRECTORIO&#39;, &#39;REGION&#39;, &#39;P8520S1A1&#39;)
+servicios_cols &lt;- c(&#39;ï..DIRECTORIO&#39;, &#39;SECUENCIA_ENCUESTA&#39;, &#39;I_HOGAR&#39;, &#39;CANT_PERSONAS_HOGAR&#39;)
 
 ###
 
@@ -442,20 +399,26 @@ write.csv(all_input,&quot;../db/input_with_dir.csv&quot;, row.names = FALSE)
 
 # Drop DIRECTORIO, SECUENCIA_P y SECUENCIA_ENCUESTA
 
-clean_input &lt;- all_input %&gt;% select(-c(&quot;ï..DIRECTORIO&quot;, &quot;SECUENCIA_P&quot;, &quot;SECUENCIA_ENCUESTA&quot;))
+clean_input &lt;- all_input %&gt;% select(-c(&quot;ï..DIRECTORIO&quot;, &quot;SECUENCIA_P&quot;, &quot;SECUENCIA_ENCUESTA&quot;, &quot;P6051&quot;))
 
 write.csv(clean_input,&quot;../db/input.csv&quot;, row.names = FALSE)
 
 labeled_input &lt;- all_input %&gt;% left_join(labeled, by = c(&#39;ï..DIRECTORIO&#39;, &#39;SECUENCIA_P&#39;))
 
-clean_labeled_input &lt;- labeled_input %&gt;% select(-c(&quot;ï..DIRECTORIO&quot;, &quot;SECUENCIA_P&quot;, &quot;SECUENCIA_ENCUESTA&quot;))
+# Removemos datos anómalos basados en la columna I_HOGAR
+clean_labeled_input &lt;- labeled_input %&gt;% select(-c(&quot;ï..DIRECTORIO&quot;, &quot;SECUENCIA_P&quot;, &quot;SECUENCIA_ENCUESTA&quot;, &quot;P6051&quot;)) %&gt;% filter(I_HOGAR &lt; 100000000)
+
+
+## Convertimos las variables categóricas a factores
+
+clean_labeled_input$P6020 &lt;- as.factor(clean_labeled_input$P6020)
+clean_labeled_input$P5502 &lt;- as.factor(clean_labeled_input$P5502)
+clean_labeled_input$P6080 &lt;- as.factor(clean_labeled_input$P6080)
+clean_labeled_input$P8587 &lt;- as.factor(clean_labeled_input$P8587)
+clean_labeled_input$REGION &lt;- as.factor(clean_labeled_input$REGION)
+clean_labeled_input$P8520S1A1 &lt;- as.factor(clean_labeled_input$P8520S1A1)
 
 write.csv(clean_labeled_input,&quot;../db/labeled_input.csv&quot;, row.names = FALSE)</code></pre>
-<div id="refs" class="references csl-bib-body">
-<div id="ref-DirecciondeMetodologiayProduccionEstadistica2020" class="csl-entry">
-<div class="csl-left-margin">[1] </div><div class="csl-right-inline">Dirección de Metodología y Producción Estadística, <span>“<span class="nocase">Encuesta Nacional de Calidad de Vida 2019</span>.”</span> 2020 [Online]. Available: <a href="http://microdatos.dane.gov.co/index.php/catalog/678/study-description">http://microdatos.dane.gov.co/index.php/catalog/678/study-description</a>. [Accessed: 01-Apr-2021]</div>
-</div>
-</div>
 </div>
 </div>
 

@@ -1,5 +1,5 @@
 ---
-title: "Informe"
+title: "Predicción de Número de Hijos en un Hogar Colombiano con un Modelo KNN"
 output: html_document
 bibliography: bibliography.bib
 csl: ieee-with-url.csl
@@ -8,6 +8,11 @@ csl: ieee-with-url.csl
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
 ```
+
+Basados en los datos dispuestos por el DANE en el Archivo Nacional de Datos [@DANE2020a]
+sobre la Encuesta Nacional de Calidad de Vida del 2019, entrenamos el modelo
+K Nearest Neighbours (KNN) para predecir el número de hijos en un hogar colombiano.
+
 
 ```{r, child=c('preprocessing.Rmd')}
 
