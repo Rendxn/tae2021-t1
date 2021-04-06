@@ -163,7 +163,6 @@ clean_labeled_input$P6080 <- as.factor(clean_labeled_input$P6080)
 clean_labeled_input$P8587 <- as.factor(clean_labeled_input$P8587)
 clean_labeled_input$REGION <- as.factor(clean_labeled_input$REGION)
 clean_labeled_input$P8520S1A1 <- as.factor(clean_labeled_input$P8520S1A1)
-clean_labeled_input$HIJOS <- as.factor(clean_labeled_input$HIJOS)
 
 write.csv(clean_labeled_input,"../db/labeled_input.csv", row.names = FALSE)
 ```
