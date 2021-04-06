@@ -67,7 +67,7 @@ ui <-  navbarPage(
                     "Básica Secundaria (6° - 9°)" = 4,
                     "Media (10° - 13°)" = 5,
                     "Técnico sin título" = 6,
-                    "Técnico sin título" = 7,
+                    "Técnico con título" = 7,
                     "Tecnológico sin título" = 8,
                     "Tecnológico con título" = 9,
                     "Universitario sin título" = 10,
