@@ -3,3 +3,6 @@ Trabajo 1 de la materia Técnicas de Aprendizaje Estadístico en la Universidad 
 
 App:
 https://il5kdx-santiago0rend0n.shinyapps.io/Hijos-Hogar-Colombiano-KNN/
+
+Rpubs:
+https://rpubs.com/IThiagoRo/750544
