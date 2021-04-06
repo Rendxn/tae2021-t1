@@ -7,23 +7,28 @@
 #    http://shiny.rstudio.com/
 #
 
+# libraries
 library(shiny)
 library(bslib)
 library(caret)
 
-# Define UI for application that draws a histogram
+# front end - navbar page
 ui <-  navbarPage("TAE 2021 - 1",
-                  
+                  # select flatly bootswatch theme
                   theme = bs_theme(bootswatch = "flatly"),
                   tabPanel("Modelo", sidebarLayout(
+                      # sidebar con el formulario
                       sidebarPanel(
                           h4('Información sobre el cabeza de hogar'),
+                          # sexo
                           radioButtons("sex", "Sexo",
                                        c("Masculino" = 1,
                                          "Femenino" = 2),
                                        inline = TRUE,
                                        ),
+                          # edad
                           numericInput("age", "Edad", value = NULL, min = 0),
+                          # estado civil
                           selectInput("civil", "Estado Civil",
                                       c("No está casado(a) y vive en pareja hace menos de dos años" = 1,
                                         "No está casado(a) y vive en pareja hace dos años o más" = 2,
@@ -33,6 +38,7 @@ ui <-  navbarPage("TAE 2021 - 1",
                                         "Está casado(a)" = 6
                                         )
                                       ),
+                          # pueblo o etnia
                           selectInput("etnia", "Pueblo o Etnia",
                                       c("Indígena" = 1,
                                         "Gitano(a) (Rom)" = 2,
@@ -41,6 +47,7 @@ ui <-  navbarPage("TAE 2021 - 1",
                                         "Negro(a), mulato(a) (afrodescendiente), afrocolombiano(a)" = 5,
                                         "Ninguno de los anteriores" = 6
                                       )),
+                          # nivel educativo
                           selectInput("edu", "Nivel educativo",
                                       c("Ninguno" = 1,
                                         "Preescolar" = 2,
@@ -56,6 +63,7 @@ ui <-  navbarPage("TAE 2021 - 1",
                                         "Postgrado sin título" = 12,
                                         "Postgrado con título" = 13
                                       )),
+                          # región
                           selectInput("region", "Región",
                                       c("Caribe" = 1,
                                         "Oriental" = 2,
@@ -67,6 +75,7 @@ ui <-  navbarPage("TAE 2021 - 1",
                                         "San Andrés" = 8,
                                         "Orinoquía - Amazonía" = 9
                                       )),
+                          # estrato
                           selectInput("estrato", "Estrato",
                                       c("Bajo - Bajo" = 1,
                                         "Bajo" = 2,
@@ -78,23 +87,27 @@ ui <-  navbarPage("TAE 2021 - 1",
                                         "No conoce el estrato o no cuenta con recibo de pago" = 9,
                                         "Recibos sin estrato o el servicio es pirata" = 0
                                       )),
+                          # ingreso mensual total del hogar
                           numericInput("ingreso", "Ingreso mensual total del hogar", value = NULL, min = 0),
+                          # cantidad de personas en el hogar
                           numericInput("cant_personas", "Cantidad de personas en el hogar", value = NULL, min = 0),
+                          # botón para enviar formulario
                           submitButton(text = "Enviar")
                           ),
                       mainPanel(
                           h2('Predicción de la cantidad de hijos en los hogares colombianos'),
                           hr(),
+                          # predicción
                           uiOutput('prediction')
                       )
                   )
                   )
 )
 
-# Define server logic required to draw a histogram
 server <- function(input, output) {
     modelo <- readRDS('data/knnModel.rds')
     output$prediction <- renderUI({
+        # se validan las entradas al modelo
         validate(
             need(input$sex, 'Seleccione su sexo.'),
             need(input$age > 0, 'Ingrese una edad válida.'),
@@ -106,7 +119,7 @@ server <- function(input, output) {
             need(input$ingreso >= 0, 'Digite un ingreso mensual total válido.'),
             need(input$cant_personas > 0, 'Ingrese una cantidad de personas en el hogar válido')
         )
-        
+        # se genera un dataframe con las entradas
         entrada <- as.data.frame(cbind(input$sex, input$age, input$civil,
                                        input$etnia, input$edu, 
                                        input$region, input$estrato,
@@ -116,8 +129,10 @@ server <- function(input, output) {
         entrada$P6040 <- as.integer(entrada$P6040)
         entrada$I_HOGAR <- as.numeric(entrada$I_HOGAR)
         entrada$CANT_PERSONAS_HOGAR <- as.integer(entrada$CANT_PERSONAS_HOGAR)
+        # predicción
         result <- predict(modelo, entrada)
         
+        # renderizar resultado
         div(p('La cantidad de hijos en su hogar es:'),
             h3(round(result)))
     })
