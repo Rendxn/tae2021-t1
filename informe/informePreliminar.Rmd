@@ -23,5 +23,3 @@ K Nearest Neighbours (KNN) para predecir el número de hijos en un hogar colombi
 
 ```{r, child=c('modeloKNN.Rmd')}
 ```
-
-# Observaciones - Análisis Posterior - Conclusiones
