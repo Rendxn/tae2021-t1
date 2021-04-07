@@ -4,19 +4,19 @@ Trabajo 1 de la materia Técnicas de Aprendizaje Estadístico en la Universidad 
 
 ## App:
 
-[https://il5kdx-santiago0rend0n.shinyapps.io/Hijos-Hogar-Colombiano-KNN/]
+https://il5kdx-santiago0rend0n.shinyapps.io/Hijos-Hogar-Colombiano-KNN/
 
 ## Rpubs
 
-[https://rpubs.com/sarendongi/tae2021-t1]
+https://rpubs.com/sarendongi/tae2021-t1
 
 ## Video
 
-[https://youtu.be/bYrgFo_2NI0]
+https://youtu.be/bYrgFo_2NI0
 
 ## Integrantes
 
-- Arley Smith Reina Saldaña - (asreinas@unal.edu.co)[mailto:asreinas@unal.edu.co]
-- Santiago Rendón Giraldo - (sarendongi@unal.edu.co)[mailto:sarendongi@unal.edu.co]
-- Sebastián Rendón Giraldo - (serendongi@unal.edu.co)[mailto:serendongi@unal.edu.co]
-- Iván Santiago Rojas Martínez - (isrojasm@unal.edu.co)[mailto:isrojasm@unal.edu.co]
+- Arley Smith Reina Saldaña - asreinas@unal.edu.co
+- Santiago Rendón Giraldo - sarendongi@unal.edu.co
+- Sebastián Rendón Giraldo - serendongi@unal.edu.co
+- Iván Santiago Rojas Martínez - isrojasm@unal.edu.co
