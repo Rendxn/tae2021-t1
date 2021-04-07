@@ -114,6 +114,7 @@ Seleccionamos las siguientes variables de la base de datos:
 | Datos de la vivienda                     | REGION       | Región                                      | Discreta | Numérica    |
 | Datos de la vivienda                     | P8520S1A1    | Estrato                                     | Discreta | Numérica    |
 | Servicios del hogar                      | I_HOGAR      | Ingreso mensual total del hogar             | Discreta | Numérica    |
+| Servicios del hogar                      | CANT_PERSONAS_HOGAR      | Cantidad de personas en el hogar | Continua | Numérica    |
 
 ```{r}
 

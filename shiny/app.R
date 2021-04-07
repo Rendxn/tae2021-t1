@@ -137,21 +137,27 @@ ui <-  navbarPage(
     )),
     tabPanel('Informe', div(
         a(
-            'Enlace del informe en RPubs',
+            'Informe en RPubs',
             href = 'https://rpubs.com/sarendongi/tae2021-t1',
             target = '_blank'
         )
     )),
     tabPanel('Repositorio', div(
         a(
-            'Enlace del repositorio en GitHub',
+            'Repositorio en GitHub',
             href = 'https://github.com/Rendxn/tae2021-t1',
             target = '_blank'
         )
     )),
-    tabPanel('Video', div(a(
-        'Enlace del video', target = '_blank'
-    )))
+    tabPanel('Video', 
+             div(
+                 a('Enlace del video', href='https://drive.google.com/file/d/1S4rMWuF8nkRDoN4pWDvll3e1JWBpUmrp/view?usp=sharing', target = '_blank')
+             ),
+             div(
+                 tags$iframe(width="1120", height="630", src="https://www.youtube.com/embed/bYrgFo_2NI0" ),
+                 align = "center"
+             )
+    )
 )
 
 server <- function(input, output) {

@@ -5,7 +5,7 @@ bibliography: bibliography.bib
 csl: ieee-with-url.csl
 ---
 # Importe de librería para el modelo de regresión
-```{r, warning=FALSE, message=FALSE, echo = FALSE}
+```{r, warning=FALSE, message=FALSE}
 # Caret para el modelo
 library(caret)
 # Para entrenar el modelo con multithreading
@@ -42,7 +42,7 @@ Debido a que se tiene una cantidad significativa de datos $(93.993)$, se decide 
 
 ## Entrenamiento y control
 
-Se realiza el entrenamiento del modelo utilizando el método KNN, utilizando validación cruzada con 10 folds. Se prueban 5 modelos con diferentes valores de K, para ver cuál es el mejor valor de K. A esto se le conoce como **hyperparameter tuning**. Cada fold separa una parte aleatoria de los datos para entrenamiento y otra para validación de cada modelo.
+Se realiza el entrenamiento del modelo KNN, utilizando validación cruzada con 10 folds. Se prueban 5 modelos con diferentes valores de K, para ver cuál es el mejor valor de K. A esto se le conoce como **hyperparameter tuning**. Cada fold separa una parte aleatoria de los datos para entrenamiento y otra para validación de cada modelo.
 ```{r, message=FALSE, warning=FALSE, echo=FALSE, eval=FALSE}
 # Habilitar cluster para trabajo en paralelo
 cluster <- makeCluster(detectCores() - 2) # habilitar n - 2 threads de la cpu

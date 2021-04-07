@@ -10,7 +10,7 @@ library(knitr)
 ```
 
 # Base de datos: 
-La base de datos fue tomada de la Encuesta Nacional de calidad de vida en Colombia [@DANE2020a] y después de un proceso de limpieza y depuración de los datos, hemos seleccionado las siguientes variables de interés de acuerdo con la literatura [@Robayo2019]: 
+La base de datos fue tomada de la Encuesta Nacional de Calidad de Vida en Colombia [@DANE2020a] y después de un proceso de limpieza y depuración de los datos, hemos seleccionado las siguientes variables de interés de acuerdo con la literatura [@Robayo2019]: 
 
 * **P6020:** Sexo 
 * **P6040:** Edad 
@@ -28,7 +28,7 @@ labeled <- read.csv("../db/labeled_input.csv", header = TRUE, sep = ",")
 data <- data.frame(labeled)
 ```
 
-# Medidas de localizacion 
+# Medidas de localización 
 ```{r echo = FALSE}
 #data_n variables numericas
 data_n  <- data %>% select(P6040, I_HOGAR, CANT_PERSONAS_HOGAR, HIJOS)
@@ -88,7 +88,7 @@ table_f(data$P6020, 'Sexo')
 * $5$ Está soltero(a)
 * $6$ Está casado(a)
 
-De la muestra se puede ver que aproximadamente el 35% de los encuestados no estan casados y viven en pareja hace mas de 2 años
+De la muestra se puede ver que aproximadamente el 35% de los encuestados no están casados y viven en pareja hace mas de 2 años
 
 ```{r echo = FALSE}
 #table de la variable Estado Civil
@@ -103,7 +103,7 @@ table_f(data$P5502, 'Estado Civil')
 * $5$ Negro (a), mulato (a)(afrodescendiente),afrocolombiano(a) 
 * $6$ Ninguno de los anteriores
 
-En cuanto a la etnia , el 80% no pertencen a ninguna etnia o pueblo especifico de alguno de los presentados por la encuesta 
+En cuanto a la etnia, el 80% no pertencen a ninguna etnia o pueblo especifico de alguno de los presentados por la encuesta 
 
 
 ```{r echo = FALSE}
@@ -116,7 +116,7 @@ table_f(data$P6080, 'Etnia')
 
 ### Variable Región  (REGION)
 
-Pregunta relacionada a la región en que se encuentra el hogar de la persona encuestada, donde; 
+Pregunta relacionada a la región en que se encuentra el hogar de la persona encuestada, donde:
 
 * $1$ Caribe
 * $2$ Oriental 
@@ -234,7 +234,7 @@ después de ver los resúmenes numéricos donde el promedio de los ingresos mens
 
 * La mayoría de hogares colombianos tiene un numero de **personas** en el hogar entre **1 persona** y **5 personas** por hogar.  
 
-* La mayoría de hogares colombianos tiene un numero de **hijos**  entre **0 hijos** y **2 hijos**  por hogar, lo cual es cercano a un estudio realizado en Cauca [@Gomez2015]. 
+* La mayoría de hogares colombianos tiene un numero de **hijos**  entre **0 hijos** y **2 hijos**  por hogar, lo cual es cercano a un estudio realizado en Cauca [@Gomez-Sanchez2015]. 
 
 * El **64%** de las cabezas de hogar encuestadas son **Hombres** y el **36%** son **Mujeres**.
 
@@ -246,7 +246,7 @@ después de ver los resúmenes numéricos donde el promedio de los ingresos mens
 
 ### Relaciones entre las variables y nuestra etiqueta (Hijos)
 
-Variables Categoricas:
+Variables Categóricas:
 
 ```{r echo = FALSE}
 data_s <- data %>% select(P6040, P5502, P6020,  P8587, REGION,  P8520S1A1, HIJOS,)
@@ -312,7 +312,7 @@ Se observan una posible relación fuerte entre el **Número de personas en el ho
 
 
 ```{r echo = FALSE}
-kable(cor(x=data$CANT_PERSONAS_HOGAR, y=data$HIJOS), col.names = "Correlacion de las Peronas del Hogar entre el Numero de Hijos")
+kable(cor(x=data$CANT_PERSONAS_HOGAR, y=data$HIJOS), col.names = "Correlación de las Personas del Hogar entre el Número de Hijos", align = rep('l', 1))
 
 ```
 

@@ -23,3 +23,11 @@ K Nearest Neighbours (KNN) para predecir el número de hijos en un hogar colombi
 
 ```{r, child=c('modeloKNN.Rmd')}
 ```
+
+# Observaciones
+
+* Una de las consideraciones más importantes al momento de desarrollar el modelo, fue la selección de variables, a pesar de realizar búsquedas en diferentes fuentes de información que dieran indicios de las variables influyentes en el número de hijos en un hogar, al momento de probar las correlaciones se encontraba que muchas de ellas no influían en la variable objetivo. Según [@Gotmark2020] factores como la educación y la riqueza eran variables relacionadas con la fertilidad de la población; sin embargo, aun son necesarios más estudios para establecer la causalidad y la importancia relativa de estas variables.
+* El método de KNN a mayor cantidad de variables suele tener dificultades con la predicción debido a la cantidad de distancias que debe considerar para tomar la decisión adecuada. Esta puede ser una de las razones del valor del RMSE.
+* La identificación de datos atípicos en la base de datos es fundamental para evitar obtener estadísticos que no representen adecuadamente la muestra.
+* Es importante la simplificación del modelo y la cantidad de variables usadas para reducir el costo computacional.
+* En cuanto, a la validación de los modelos, se hizo uso de las medidas de bondad de ajuste error cuadrático medio RMSE y el R-cuadrado. De esta manera, se observa que el modelo con mejor ajuste es el modelo con $K=7$. Así, el RMSE de este modelo es de $0.6998452$ tiene un valor relativamente bajo en comparación con los otros modelos, asimismo, se evidencia una r-cuadrada de 0.6440311 lo que permite concluir que las variables predictoras incluidas en el modelo predicen el $64,40%$ de las predicciones en la cantidad de hijos en el hogar.
