@@ -29,7 +29,7 @@ ui <-  navbarPage(
                          ),
                          inline = TRUE, ),
             # edad
-            numericInput("age", "Edad", value = NULL, min = 0),
+            numericInput("age", "Edad (años)", value = NULL, min = 0),
             # estado civil
             selectInput(
                 "civil",
@@ -111,7 +111,7 @@ ui <-  navbarPage(
             # ingreso mensual total del hogar
             numericInput(
                 "ingreso",
-                "Ingreso mensual total del hogar",
+                "Ingreso mensual total del hogar (pesos)",
                 value = NULL,
                 min = 0
             ),

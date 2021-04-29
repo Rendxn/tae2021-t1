@@ -68,14 +68,14 @@ Veamos qué valor de K obtuvo mejores resultados.
 
 ```{r}
 # veamos cuál valor de K fue seleccionado como el mejor
-knitr::kable(knn_fit$results) %>% kable_material_dark()
+knitr::kable(knn_fit$results) %>% kable_paper()
 ```
 
 Según la optimización de parámetros, el mejor modelo es aquel con un valor de $K = 7$, pues obtuvo el menor RMSE y el mejor puntaje R2.
 
 ```{r}
 # Veamos solamente el modelo seleccionado
-knitr::kable(knn_fit$results[2,]) %>% kable_material_dark()
+knitr::kable(knn_fit$results[2,]) %>% kable_paper()
 ```
 ## Validación y pruebas
 
@@ -93,7 +93,7 @@ Principalmente, se utilizaron dos métricas para evaluar el desempeño del model
 El RMSE del modelo para el conjunto de pruebas es el siguiente:
 ```{r}
 test_clean <- na.omit(test)
-RMSE(pred = test_pred, obs = test_clean$HIJOS)
+rmseVal <- RMSE(pred = test_pred, obs = test_clean$HIJOS)
 ```
 Este valor mide la cantidad de error que hay entre el valor predicho y el valor conocido.
 
@@ -101,7 +101,13 @@ Este valor mide la cantidad de error que hay entre el valor predicho y el valor 
 
 El Coeficiente R2 para el conjunto de pruebas es el siguiente:
 ```{r}
-R2(pred = test_pred, obs = test_clean$HIJOS)
+r2Val <- R2(pred = test_pred, obs = test_clean$HIJOS)
+```
+
+```{r}
+metricas <- as.data.frame(cbind(rmseVal, r2Val))
+colnames(metricas) <- c("RMSE", "Valor R2")
+knitr::kable(metricas) %>% kable_paper()
 ```
 
 Este coeficiente representa la proporción de varianza en los resultados que nuestro modelo es capaz de explicar y nos da información sobre qué tan bien se ajusta el modelo a los datos [@ref1].
