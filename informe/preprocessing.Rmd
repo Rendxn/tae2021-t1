@@ -5,14 +5,20 @@ bibliography: bibliography.bib
 csl: ieee-with-url.csl
 ---
 
-# Importe de Librerías
+## Importe de Librerías
+
+Importamos las librerías necesarias para hacer el tratamiento inicial de los datos
+y la generación de la variable salida.
 
 ```{r import-dependencies, warning=FALSE, message=FALSE}
 library(dplyr)
 library(tibble)
 ```
 
-# Lectura de Datos
+## Lectura de Datos
+
+Leemos los datos que se encuentran en la carpeta `./data`, los cuales corresponden
+a los CSV dispuestos por el DANE en la Encuesta de Calidad de Vida del 2019.
 
 ```{r import-data, cache = TRUE}
 
@@ -43,7 +49,29 @@ files <- lapply(
 
 ```
 
-# Caracterización de Capítulos (Tablas) de la Base de Datos
+## Caracterización de Capítulos (Tablas) de la Base de Datos
+
+La base de datos de la encuesta está compuesta por diferentes tablas, las cuales 
+están enfocadas a diferentes públicos de acuerdo a lo que se esté encuestando.
+Para entender mejor, el DANE define las unidades de observación *vivienda, hogar y persona*:
+
+Una *vivienda* corresponde a un lugar físico donde viven las personas y en la que puede 
+existir más de un *hogar*, ya que por ejemplo, pueden haber viviendas multifamiliares. 
+Por último, en un *hogar* hay una o más *personas*.
+
+Para poder unir las tablas, existen variables que se usan como llaves. Así:
+
+- En las tablas de *vivienda*, la variable **DIRECTORIO** es el identificador único de cada 
+vivienda.
+- En las tablas de *hogar*, la variable **DIRECTORIO** identifica la vivienda donde se encuentra
+este hogar y la variable **SECUENCIA_ENCUESTA** indica el número del hogar dentro de esta vivienda.
+- En las tablas de *persona*, **DIRECTORIO** indica la vivienda donde reside,
+la variable **SECUENCIA_P** indica el hogar al que pertenece y la variable 
+**SECUENCIA_ENCUESTA** indica el número de la persona dentro del hogar.
+
+
+Ahora veamos la caracterización de las tablas de la base de datos según los metadatos 
+expuestos por el DANE:
 
 | Tabla                                                     | Público encuestado      |
 | :-------------------------------------------------------- | :---------------------- |
@@ -60,22 +88,52 @@ files <- lapply(
 | Condiciones de vida del hogar y tenencia de bienes        | Hogar                   |
 | Uso de energéticos del hogar                              | Hogar                   |
 
-Con esta caracterización, podemos notar que se encuestaron:
+
+Sabiendo los identificadores de cada unidad de observación y  la caracterización de
+las tablas, podemos notar que se encuestaron: 
 
 * $93.161$ viviendas.
 * $93.993$ hogares.
 * $289.558$ personas.
 
-# Preprocesamiento de Datos
-
 ## Generación de la Etiqueta
 
-En la tabla *Características y composición del hogar*, la variable **P6051** indica
-el parentesco de la persona encuestada con el jefe de hogar. Cuando esta variable es
-*3*, significa que la persona es un hijo del jefe de hogar. Por lo tanto, podemos
-computar cuántos hijos hay en un hogar de la siguiente manera:
+En las tablas de hogar no hay una variable que indique el número de hijos en este, 
+por lo que es necesario definir las condiciones en las que reconoceremos un hijo en el hogar, 
+para así computarla.
 
-1. Cambiar los valores de P6051, así:
+Solo consideramos los **hijos de la cabeza de hogar**, por lo que no tendremos 
+en cuenta los hijos de sus hijos (nietos) o cualquier otro escenario.
+
+Con esta condición, podemos explorar la tabla *Características y composición del hogar*,
+donde la variable **P6051** indica el parentesco de la persona encuestada con el jefe de hogar.
+Los posibles valores de esta variable son:
+
+- 1 Jefe (a) del hogar
+- 2 Pareja, esposo (a), cónyuge, compañero(a)
+- 3 Hijo(a) hijastro(a)
+- 4 Nieto (a)
+- 5 Padre, madre, padrastro y madrastra
+- 6 Suegro o suegra
+- 7 Hermano (a), hermanastro (a)
+- 8 Yerno, nuera
+- 9 Otro pariente del jefe(a)
+- 10 Empleado(a) del servicio doméstico
+- 11 Parientes del servicio doméstico
+- 12 Trabajador
+- 13 Pensionista
+- 14 Otro pariente
+
+Cuando esta variable es $3$, significa que la persona es un hijo del jefe de hogar.
+Por lo tanto, podemos computar cuántos hijos hay en un hogar contando el número de ocurrencias 
+del valor $3$ en esta variable y agruparlo por hogar.
+
+El procedimiento es un poco distinto a lo descrito anteriormente, pero la idea es la misma.
+Este puede verse a continuación:
+
+1. Ya que solo nos interesan cuando el valor de la variable es $3$, cambiamos los
+valores de esta de tal manera que podamos sumarla por cada hogar. 
+Reemplazamos entonces los valores de la siguiente manera:
 
 $$
 \begin{cases}
@@ -83,26 +141,31 @@ $$
   0 & \text{en otro caso }
 \end{cases}
 $$
-2. Agrupamos por hogar. Según los metadatos y la estructura de la encuesta 
-[@DANE2020], las claves de un hogar
-en las tablas de personas (como *Características y composición del hogar*)
-son `ï..DIRECTORIO` el cual es único para cada vivienda y `SECUENCIA_P`, el cual
-es único por cada hogar dentro de esa vivienda.
+2. Agrupamos por hogar. Recordemos que las variables *DIRECTORIO* y *SECUENCIA_P*
+identifican un hogar en las tablas donde el público encuestado son todas las personas.
 
 ```{r label-generation}
 # Trae la tabla de Características y composición del hogar
 # donde se encuentra la variable P6051.
 carac_persona <- files[[2]]
 
+# Hacemos el reemplazo de la variable según el paso 1: (mutate, if_else)
+# Agrupamos por las llaves del hogar en esta tabla (group_by)
+# Generamos la variable HIJOS como la suma de P6051 (summarise, sum).
 labeled <-
   carac_persona %>% mutate(P6051 = if_else(P6051 == 3, 1, 0)) %>% group_by(ï..DIRECTORIO, SECUENCIA_P) %>% summarise(HIJOS = sum(P6051), .groups = "keep")
 
 ```
 
 
-## Filtrado y Generación de Variables de Entrada
+## Selección de las Variables de Entrada
 
-Seleccionamos las siguientes variables de la base de datos: 
+Según ...
+
+En el análisis descriptivo presentado más adelante, veremos qué variables están
+correlacionadas con la variable salida generada *HIJOS*.
+
+Seleccionamos las siguientes variables de la base de datos:
 
 | Tabla                                    | Variable     | Etiqueta                                    | Tipo     | Formato     |
 |:----                                     | :----------- | :------------------------------             | :------- | :-------    |

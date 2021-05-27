@@ -6,12 +6,26 @@ csl: ieee-with-url.csl
 ---
 
 ```{r setup, include=FALSE}
-knitr::opts_chunk$set(echo = TRUE)
+knitr::opts_chunk$set(echo = TRUE, warning=FALSE, message=FALSE)
 ```
 
-Basados en los datos dispuestos por el DANE en el Archivo Nacional de Datos [@DANE2020a]
-sobre la Encuesta Nacional de Calidad de Vida del 2019, entrenamos el modelo
-K Nearest Neighbours (KNN) para predecir el número de hijos en un hogar colombiano.
+El número de hijos en un hogar suele ser una variable importante en diferentes programas sociales, en el sector comercial al momento de ofrecer productos y en el sector financiero. Por ejemplo, un banco puede incluir el número de hijos en el hogar, en conjunto con otras variables, para determinar si ofrecer un crédito o no, puesto que entre más hijos haya en el hogar, más gastos conlleva.
+
+Con esta motivación, proponemos un modelo capaz de predecir el número de hijos de los hogares colombianos a 
+partir de diferentes características del hogar que suelen ser conocidas con mayor facilidad por las compañías que lo usen.
+
+Para esto, usamos los datos dispuestos por el DANE en el Archivo Nacional de Datos [@DANE2020a]
+sobre la Encuesta Nacional de Calidad de Vida del 2019 como datos de entrenamiento y prueba del modelo.
+
+# Retos
+
+Los principales retos que afrontamos, fueron:
+
+* Encontrar en la bibliografía disponible acerca de las familias colombianas, los principales factores que influyen en 
+la fecundidad y el tamaño de la familia colombiana.
+* Teniendo en cuenta las variables encontradas en la bibliografía, construirlas a partir de la encuesta dispuesta por el DANE.
+* Preprocesar, filtrar y analizar los datos. i.e. Omitir las variables innecesarias, tratamiento de los valores nulos y un análisis descriptivo.
+* Minimizar la cantidad de variables de entrada sin comprometer la precisión.
 
 
 ```{r, child=c('preprocessing.Rmd')}
