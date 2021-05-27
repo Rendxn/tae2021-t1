@@ -1,6 +1,6 @@
 ---
 title: "Predicción de Número de Hijos en un Hogar Colombiano con un Modelo KNN"
-output: html_document
+output: rmdformats::readthedown
 bibliography: bibliography.bib
 csl: ieee-with-url.csl
 ---

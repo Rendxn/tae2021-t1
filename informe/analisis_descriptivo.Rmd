@@ -1,7 +1,5 @@
 ---
 title: "Analisis Descriptivo"
-output:
-  rmdformats::readthedown
 ---
 
 
