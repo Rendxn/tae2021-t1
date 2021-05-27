@@ -1,16 +1,20 @@
 ---
 title: "Analisis Descriptivo"
-output: html_document
+output:
+  rmdformats::readthedown
 ---
 
 
 ```{r, warning=FALSE, message=FALSE, echo = FALSE}
 library(dplyr)
 library(knitr)
+library(ggplot2)
 ```
 
-# Base de datos: 
-La base de datos fue tomada de la Encuesta Nacional de Calidad de Vida en Colombia [@DANE2020a] y después de un proceso de limpieza y depuración de los datos, hemos seleccionado las siguientes variables de interés de acuerdo con la literatura [@Robayo2019]: 
+
+
+# Base de datos
+La base de datos fue tomada de la Encuesta Nacional de Calidad de Vida en Colombia [@DANE2020a]. Después de un estudio previo sobre el comportamiento de la natalidad y las variables que son determnisiticas en la demografia colombiana. Se procede a la limpieza y depuración de los datos, Donde se selecciona las siguientes variables de interés de acuerdo con la literatura [@Robayo2019]: 
 
 * **P6020:** Sexo 
 * **P6040:** Edad 
@@ -21,6 +25,9 @@ La base de datos fue tomada de la Encuesta Nacional de Calidad de Vida en Colomb
 * **REGION:** Región
 * **P8520S1A1:** Estrato
 * **HIJOS:** Hijos
+
+
+Se procede a realizar un análisis descriptivo y exploratorio de todas las variables seleccionadas con el fin de tener un entendimiento más claro del conjunto de datos y de ser posible encontrar relaciones de dichas variables con la variable respuetas **Hijos**
 
 ```{r echo = FALSE}
 #Lectura de la base de datos
@@ -58,10 +65,31 @@ kable(t(apply(data_n, 2, sd_f)), caption = "Desviaciones Estandar", col.names = 
 * Los hijos de los hogares colombianos encuestados se encuentran en un rango de **0 hijos** a **11 hijos** con un promedio de  **1 hijo** por hogar y varían  en **+- 1 hijo**.
 
 
+### Variable Edad (P6040)
+```{r echo=FALSE}
+ggplot(data,aes(x=P6040))+
+  geom_bar(color="black",fill="red", alpha=0.2)+
+  labs(title = "Histograma de las Edades")+
+  ylab("Numeros de Hogares")
+```
+
+Las edades de los jefes de hogar encuestados en este reporte se encuentran entre los **30 años** y **65 años** de edad.
+
+
+```{r echo=FALSE}
+ggplot(data, aes(x=factor(HIJOS), y=data_n$P6040))+
+  geom_boxplot(color='black',fill='red',alpha=0.2,notch = F,notchwidth = 0.8,
+               outlier.colour = 'red',outlier.fill = 'red',outlier.size = 3)+
+  labs(title = 'Comparacion de la edad respecto al numero de hijos',
+       x = 'Hijos', y='Edad',color=NULL)+
+  stat_summary(fun=mean,geom='point',shape=21,size=2,color='black',fill='black')
+```
+
+Se observa que los encuestados que tienen **0 hijos** pueden ser determinados por diferentes **edades** a medida que la cantidad de **hijos incrementa** el comportamiento de las **edades** es muy similar.  
 
 ### Variable Sexo (P6020)
 
-A continuación se muestra el conteo de la variable sexo con  $1$ siendo  *Hombre* y $2$ siendo *Mujer* mostrando una variable dicotómica con una muestra de mas hombres que mujeres 
+A continuación se muestra el conteo de la variable sexo con  $1$ siendo  *Hombre* y $2$ siendo *Mujer* mostrando una variable dicotómica con una muestra de mas hombres que mujeres y un total de 93988 encuestados cabeza de hogar. Esta es una variable de las más influyentes según la documentación encontrada ya que muchos sugieren el estudio de la fertilidad de las mujeres para predecir el crecimiento poblacional.
 
 ```{r echo = FALSE}
 #Formato en tipo de tabla 
@@ -77,9 +105,19 @@ table_f <- function(data, colname) {
 #tabla de la variable sexo
 table_f(data$P6020, 'Sexo')
 ```
+```{r echo=FALSE}
+ ggplot(data_c, aes(x=factor(P6020), y=data_n$HIJOS))+
+  geom_boxplot(color='black',fill='red',alpha=0.2,
+               outlier.colour = 'red',outlier.fill = 'red',outlier.size = 3)+
+  labs(title = 'Diagrama de cajaa sexo vs cantidad de hijos',
+       x = 'Sexo', y='número de hijos',color=NULL)
+```
+El comportamiento de la cantidad de **hijos** respecto al género del **jefe de hogar** encuestado es muy similar.
 
 
 ### Variable Estado Civil (P5502)
+
+La variable estado civil se refiere a la situación del encuestado por sus relaciones en familia. Es vista como una situación personal, sin embargo, suele sugerir algunos estados económicos de la persona, por lo cual es participativa en la mayoría de las encuestas del estado. Los datos de la encuesta se representan de la siguiente manera:
 
 * $1$ No está casado(a) y vive en pareja hace menos de dos años
 * $2$ No está casado(a) y vive en pareja hace dos años o más 
@@ -88,13 +126,29 @@ table_f(data$P6020, 'Sexo')
 * $5$ Está soltero(a)
 * $6$ Está casado(a)
 
-De la muestra se puede ver que aproximadamente el 35% de los encuestados no están casados y viven en pareja hace mas de 2 años
+Se puede ver que aproximadamente el 35% de los encuestados no están casados y viven en pareja hace más de 2 años, además 23% están casados. Artículos como [1] ¿Unión libre o matrimonio? Efectos en el bienestar de los hijos sugieren que el estado civil influye directamente en el bienestar infantil dando a los hogares con padres casados unos mejores resultados en varios aspectos como la estabilidad económica y la planificación a futuro.
+
+[1]: Amador, Diego, & Bernal, Raquel. (2012). ¿Unión libre o matrimonio? Efectos en el bienestar de los hijos. El trimestre económico, 79(315), 529-573. Recuperado en 14 de mayo de 2021, de http://www.scielo.org.mx/scielo.php?script=sci_arttext&pid=S2448-718X2012000300529&lng=es&tlng=es.
 
 ```{r echo = FALSE}
 #table de la variable Estado Civil
 table_f(data$P5502, 'Estado Civil')
 ```
+```{r echo=FALSE}
+ggplot(data, aes(x=factor(P5502), y=data_n$HIJOS))+
+  geom_boxplot(color='black',fill='red',alpha=0.2,notch = F,notchwidth = 0.8,
+               outlier.colour = 'red',outlier.fill = 'red',outlier.size = 3)+
+  labs(title = 'Comparacion del numero de hijos respecto al Estado Civil',
+       x = 'Estado Civil', y='Número de hijos',color=NULL)+
+  stat_summary(fun=mean,geom='point',shape=21,size=2,color='black',fill='black')
+```
+
+El comportamiento de la cantidad de **hijos** respecto al **Estado civil ** es muy similar. Aproximadamente y sin importar el estado civil en los **encuestados** la cantidad de hijos es **0 hijos** a **3 hijos**  
+
+
 ### Variable Etnia (P6080)
+
+La etnia es una caracterización de las comunidades que comparten rasgos socioculturales y afinidades raciales, los miembros de determinados grupos son reconocidos por sus costumbres o creencias, para esta encuesta se tomaron las siguientes etnias:
 
 * $1$ Indígena
 * $2$ Gitano(a) (Rom)
@@ -103,7 +157,7 @@ table_f(data$P5502, 'Estado Civil')
 * $5$ Negro (a), mulato (a)(afrodescendiente),afrocolombiano(a) 
 * $6$ Ninguno de los anteriores
 
-En cuanto a la etnia, el 80% no pertencen a ninguna etnia o pueblo especifico de alguno de los presentados por la encuesta 
+El 80% no pertenecen a ninguna etnia o pueblo específico de alguno de los presentados por la encuesta, además tanto la raza afrodescendiente como la indigena representan un 9% de la muestra. La variable Etnia es considerada importante en este estudio ya que varios autores consideran que las costumbres de las distintas razas pueden influir en la estructuración de las familias de las futuras generaciones.
 
 
 ```{r echo = FALSE}
@@ -111,6 +165,16 @@ En cuanto a la etnia, el 80% no pertencen a ninguna etnia o pueblo especifico de
 #tabla de la variable Etnia
 table_f(data$P6080, 'Etnia')
 ```
+```{r echo=FALSE}
+ggplot(data, aes(x=factor(P6080), y=data_n$HIJOS))+
+  geom_boxplot(color='black',fill='red',alpha=0.2,notch = F,notchwidth = 0.8,
+               outlier.colour = 'red',outlier.fill = 'red',outlier.size = 3)+
+  labs(title = 'Comparacion del numero de hijos respecto a la Etnia',subtitle = ' ',caption = ' ',
+       x = 'Etnia', y='Número de hijos',color=NULL)+
+  #theme_elegante()+
+  stat_summary(fun=mean,geom='point',shape=21,size=2,color='black',fill='black')
+```
+
 
 
 
@@ -128,12 +192,23 @@ Pregunta relacionada a la región en que se encuentra el hogar de la persona enc
 * $8$ San Andrés 
 * $9$ Orinoquía - Amazonía 
 
-Se puede ver que la región con mayor cantidad de encuestados pertenece a la región $Caribe$ seguido por la región $Central$, ademas,las regiones con menos encuestados son $San Andrés$ y $Bogota$. Probablemente debido a la extención de tierra de las dos regiones.   
+Se puede ver que la región con mayor cantidad de encuestados pertenece a la región $Caribe$ seguido por la región $Central$, además, las regiones con menos encuestados son $San Andrés$ y $Bogotá$. Según indicadores del banco mundial [2] la tasa de natalidad va en decrecimiento cada año sin embargo para cada país la cantidad de nacidos vivos por cada mil personas cambia  . Así mismo, al tener una mayor cantidad de encuestados por region es posible que la cantidad de hijos para esa región sea mayor. 
+
+[2]: Banco Mundial. (2019). Tasa de natalidad, nacidos vivos en un año (por cada 1.000 personas), de https://datos.bancomundial.org/ 
 
 ```{r echo = FALSE}
 #tabla de la variable Region 
 table_f(data$REGION, 'Region')
 ```
+```{r echo=FALSE}
+ggplot(data_c, aes(x=factor(REGION), y=data_n$HIJOS))+
+  geom_boxplot(color='black',fill='red',alpha=0.2,notch = F,notchwidth = 0.8,
+               outlier.colour = 'red',outlier.fill = 'red',outlier.size = 3)+
+  labs(title = 'Comparacion del numero de hijos respecto a la Region',
+       x = 'Region', y='Número de hijos',color=NULL)+
+  stat_summary(fun=mean,geom='point',shape=21,size=2,color='black',fill='black')
+```
+
 
 ### Variable Estrato (P8520S1A1)
 
@@ -149,12 +224,21 @@ Pregunta relacionada con el estrato en que se encuentra el hogar de la persona e
 * $8$ Planta eléctrica  
 * $9$ No conoce el estrato o no cuenta con recibo de pago. 
 
-Notese que los valores categoricos de nivel se encuentran entre los valores $0 - 6$, mientras que los valores $8$ y $9$ se refieren al uso de una planta eléctrica o el desconocimiento de la unformación. Por otro lado se puede ver que la mayoria de encuestados pertencen a a los estratos $bajo-bajo$ y $bajo$ según el recibo de servicios públicos   
+Nótese que los valores categóricos de nivel se encuentran entre 0−6, mientras que los valores $8$ y $9$ se refieren al uso de una planta eléctrica o el desconocimiento de la información. Por otro lado se puede ver que la mayoría de encuestados pertenecen  a los estratos bajo−bajo y bajo según el recibo de servicios públicos indicando que más del $70\%$ pertenecen a estratos $2$ o menor.
 
 ```{r echo = FALSE}
 #tabla de la variable Estrato
 table_f(data$P8520S1A1, 'Estrato')
 ```
+```{r echo=FALSE}
+ggplot(data_c, aes(x=factor(P8520S1A1), y=data_n$HIJOS))+
+  geom_boxplot(color='black',fill='red',alpha=0.2,notch = F,notchwidth = 0.8,
+               outlier.colour = 'red',outlier.fill = 'red',outlier.size = 3)+
+  labs(title = 'Comparacion de los hijos respecto al estrato',
+       x = 'Estrato', y='Número de hijos',color=NULL)+
+  stat_summary(fun=mean,geom='point',shape=21,size=2,color='black',fill='black')
+```
+
 
 
 ### Variable Nivel Educativo (P8587)
@@ -175,13 +259,34 @@ Pregunta relacionada al nivel educativo más alto alcanzado por la cabeza del ho
 * $12$Postgrado sin titulo
 * $13$ Postgrado con titulo
 
-Los valores $3$,$4$ y $5$ corresponden a mas del $70\%$ de la población, encontrandose un nivel educativo promedio en basica secundaria, y media.
+Los valores $3$,$4$ y $5$ corresponden a más del $70\%$ de la población, encontrándose un nivel educativo promedio en básica secundaria, y media. La variable resulta interesante para el estudio pues según Medina Hernández, Edith Johana. (2012)  [3] la educación y la fecundidad de las mujeres están estrechamente ligadas, mostrando que altos niveles de educación en las mujeres disminuyen la fecundidad. 
+
+[3]: Medina Hernández, Edith Johana. (2012). Diferenciales regionales de la fecundidad según el nivel educativo de las mujeres colombianas en edad fértil. Sociedad y Economía, (23), 205-234. Retrieved May 14, 2021, from http://www.scielo.org.co/scielo.php?script=sci_arttext&pid=S1657-63572012000200011&lng=en&tlng=es
 
 ```{r echo = FALSE}
 #tabla de la variable Educacion
 table_f(data$P8587, 'Nivel Educación')
 ```
+```{r echo=FALSE}
+ggplot(data_c, aes(x=factor(P8587), y=data_n$HIJOS))+
+  geom_boxplot(color='black',fill='red',alpha=0.2,notch = F,notchwidth = 0.8,
+               outlier.colour = 'red',outlier.fill = 'red',outlier.size = 3)+
+  labs(title = 'Comparacion del numero hijos respecto al Nivel Educativo',subtitle = ' ',caption = ' ',
+       x = 'Nivel Educativo', y='Número de hijos',color=NULL)+
+  stat_summary(fun=mean,geom='point',shape=21,size=2,color='black',fill='black')
+```
 
+
+
+```{r echo=FALSE}
+#ggplot(data_n,aes(x=HIJOS))+
+#  geom_bar(color="black",fill="red", alpha=0.2)+
+#   labs(title = "Diagrama de barras Hijos")+
+#  ylab("Numeros de Hogares")
+```
+
+
+### Algunas graficas Descriptivas de Interes
 
 ```{r echo = FALSE}
 
@@ -244,7 +349,7 @@ después de ver los resúmenes numéricos donde el promedio de los ingresos mens
 ```
 
 
-### Relaciones entre las variables y nuestra etiqueta (Hijos)
+# Relaciones entre las variables y nuestra etiqueta (Hijos)
 
 Variables Categóricas:
 
@@ -259,7 +364,7 @@ panel.hist <- function(x, ...)
     h <- hist(x, plot = FALSE)
     breaks <- h$breaks; nB <- length(breaks)
     y <- h$counts; y <- y/max(y)
-    rect(breaks[-nB], 0, breaks[-1], y, col = "cyan", ...)
+    rect(breaks[-nB], 0, breaks[-1], y, col = "red", ...) #col="cyan"
 }
 panel.cor <- function(x, y, digits = 2, prefix = "", cex.cor, ...)
 {
@@ -307,7 +412,7 @@ panel.cor <- function(x, y, digits = 2, prefix = "", cex.cor, ...)
 pairs(data_s2,lower.panel = panel.smooth, upper.panel = panel.cor,diag.panel = panel.hist)
 ```
 
-Se observan una posible relación fuerte entre el **Número de personas en el hogar** y la variable hijo. 
+Se observan una posible relación fuerte entre el **Número de personas en el hogar** y la variable hijo. Dicha relación es un poco **obvia**. 
 
 
 
