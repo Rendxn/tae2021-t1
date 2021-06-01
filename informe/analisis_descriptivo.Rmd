@@ -9,9 +9,10 @@ library(knitr)
 library(ggplot2)
 ```
 
+# Análisis Descriptivo
 
 
-# Base de datos
+## Base de datos
 La base de datos fue tomada de la Encuesta Nacional de Calidad de Vida en Colombia [@DANE2020a]. Después de un estudio previo sobre el comportamiento de la natalidad y las variables que son determnisiticas en la demografia colombiana. Se procede a la limpieza y depuración de los datos, Donde se selecciona las siguientes variables de interés de acuerdo con la literatura [@Robayo2019]: 
 
 * **P6020:** Sexo 
@@ -33,7 +34,7 @@ labeled <- read.csv("../db/labeled_input.csv", header = TRUE, sep = ",")
 data <- data.frame(labeled)
 ```
 
-# Medidas de localización 
+## Medidas de localización 
 ```{r echo = FALSE}
 #data_n variables numericas
 data_n  <- data %>% select(P6040, I_HOGAR, CANT_PERSONAS_HOGAR, HIJOS)
@@ -347,7 +348,7 @@ después de ver los resúmenes numéricos donde el promedio de los ingresos mens
 ```
 
 
-# Relaciones entre las variables y nuestra etiqueta (Hijos)
+## Relaciones entre las variables y nuestra etiqueta (Hijos)
 
 Variables Categóricas:
 

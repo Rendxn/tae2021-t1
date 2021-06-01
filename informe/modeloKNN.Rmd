@@ -4,7 +4,12 @@ output: html_document
 bibliography: bibliography.bib
 csl: ieee-with-url.csl
 ---
-# Importe de librería para el modelo de regresión
+
+# Modelo de regresión utilizando KNN
+
+El método de KNN, aunque utilizado generalmente para problemas de clasificación, puede ser también usado para casos de regresión. KNN utiliza las características de sus K vecinos más cercanos para hacer una predicción.
+
+## Importe de librería para el modelo de regresión
 ```{r, warning=FALSE, message=FALSE}
 # Caret para el modelo
 library(caret)
@@ -13,9 +18,6 @@ library(parallel)
 library(doParallel)
 library(kableExtra)
 ```
-# Modelo de regresión utilizando KNN
-
-El método de KNN, aunque utilizado generalmente para problemas de clasificación, puede ser también usado para casos de regresión. KNN utiliza las características de sus K vecinos más cercanos para hacer una predicción.
 
 ## Muestreo y separación en entrenamiento y validación
 

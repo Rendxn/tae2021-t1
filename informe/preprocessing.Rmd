@@ -5,6 +5,25 @@ bibliography: bibliography.bib
 csl: ieee-with-url.csl
 ---
 
+# Selección y Generación de las Variables de Entrada y Salida
+
+Tras explorar la bibliografía, encontramos potenciales variables de entrada para el modelo:
+
+- La `edad` y el `estado civil` son factores importantes, pues en Colombia cada vez más 
+mujeres se casan a una mayor edad, una característica de la segunda transición demográfica; la cual 
+también implica una posible caída en el nivel de fecundidad [@Florez2013].
+- El `nivel educativo`, en especial el nivel educativo de la mujer según [@Gotmark2020] 
+sugiere una disminución de la fertilidad de un país.
+- El `ingreso mensual total del hogar` es otra característica importante, como señalado por [@Amador2013], 
+las mujeres que más se participaron económicamente son aquellas con niños entre 6 y 17 años.
+Así mismo, decidimos seleccionar el `estrato` como otro indicador relacionado con los ingresos.
+- Así mismo, decidimos escoger algunas variables por nuestro criterio.
+La región y la etnia son variables que creímos importantes, pues como [@Florez2013] expone, 
+la región caribe es la más "retrasada" en separación de la sexualidad y la procreación, mientras 
+que Medellín es la más "avanzada" en este aspecto, con respecto a la segunda transición demográfica.
+Además, la cantidad del personas en el hogar es una gran pista a cuántos hijos hacen parte del hogar.
+
+
 ## Importe de Librerías
 
 Importamos las librerías necesarias para hacer el tratamiento inicial de los datos
@@ -159,8 +178,6 @@ labeled <-
 
 
 ## Selección de las Variables de Entrada
-
-Según ...
 
 En el análisis descriptivo presentado más adelante, veremos qué variables están
 correlacionadas con la variable salida generada *HIJOS*.
