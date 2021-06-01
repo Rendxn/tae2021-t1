@@ -154,7 +154,7 @@ ui <-  navbarPage(
                  a('Enlace del video', href='https://drive.google.com/file/d/1S4rMWuF8nkRDoN4pWDvll3e1JWBpUmrp/view?usp=sharing', target = '_blank')
              ),
              div(
-                 tags$iframe(width="1120", height="630", src="https://www.youtube.com/embed/bYrgFo_2NI0" ),
+                 tags$iframe(width="1120", height="630", src="https://www.youtube.com/embed/UHtl165Hg_o" ),
                  align = "center"
              )
     )
