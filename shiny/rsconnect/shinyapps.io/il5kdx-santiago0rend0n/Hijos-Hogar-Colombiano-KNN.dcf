@@ -5,8 +5,9 @@ account: il5kdx-santiago0rend0n
 server: shinyapps.io
 hostUrl: https://api.shinyapps.io/v1
 appId: 3918125
-bundleId: 4440207
+bundleId: 4662763
 url: https://il5kdx-santiago0rend0n.shinyapps.io/Hijos-Hogar-Colombiano-KNN/
-when: 1617767267.24832
+when: 1622512648.58379
+lastSyncTime: 1622512648.58379
 asMultiple: FALSE
 asStatic: FALSE
